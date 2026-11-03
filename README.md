@@ -1,73 +1,76 @@
-# orch-kit : piloter un projet avec plusieurs sessions Claude Code
+# orch-kit: run a project with several Claude Code sessions
 
-Une méthode éprouvée sur un projet réel (une app web avec backend, OCR par IA, landing et déploiement) pour faire
-travailler **plusieurs sessions Claude Code en parallèle** sous la coordination d'une session **ORCH**, avec un
-**PO** humain qui garde les décisions.
+A method proven on a real project (a web app with a backend, AI receipt scanning, a landing page and deployment)
+to have **several Claude Code sessions work in parallel**, coordinated by an **ORCH** session, while a human **PO**
+keeps the decisions.
 
-## Le principe
+## How it works
 
-- **ORCH** : découpe le travail en prompts numérotés (`P-001`, suites `P-001-C2`), les écrit en entier dans un
-  tableau de suivi, vérifie chaque retour lui-même (diff, secrets, conflits, migrations, site en ligne), fusionne,
-  et ne remonte au PO que les décisions.
-- **Sessions spécialisées** (A fondations, B backend, D design, E intégration, H déploiement…) : chacune dans son
-  worktree git et sa branche, dans son périmètre ; elles rendent un retour au format commun et ne fusionnent pas.
-- **PO** : tranche (production, argent, textes publics, irréversible) et garde les secrets et les comptes. Une
-  **matrice de délégation** écrite dans le CLAUDE.md fixe ce que l'ORCH fait seul.
-- **Tableau de suivi** : un artifact claude.ai avec deux vues, « Prompts » (à envoyer → envoyé → retour → traité)
-  et « À exécuter » (étapes numérotées du PO, avec le résultat attendu).
-- **Communication directe** : sur un même poste, l'ORCH joint les autres sessions (`ListAgents`, `SendMessage`),
-  envoie les prompts ordinaires et reçoit les retours sans copier-coller.
+- **ORCH**: splits the work into numbered prompts (`P-001`, follow-ups `P-001-C2`) and writes each one in full in a
+  tracker. It checks every return itself (diff, secrets, merge conflicts, database migrations, live site), merges,
+  and only brings decisions to the PO.
+- **Specialized sessions** (A foundations, B backend, D design, E integration, H deployment…): each one works in
+  its own git worktree and branch, inside its own scope. They answer in a common return format and never merge.
+- **PO**: decides on production, money, public texts and anything irreversible, and keeps the secrets and accounts.
+  A **delegation matrix** written in the project's CLAUDE.md defines what the ORCH may do on its own.
+- **Tracker**: a claude.ai artifact with two views: "Prompts" (to send → sent → returned → done) and "To execute"
+  (the PO's numbered steps, each with its expected result).
+- **Direct communication**: on the same machine, the ORCH reaches the other sessions (`ListAgents`, `SendMessage`),
+  sends ordinary prompts and receives returns without any copy-paste.
 
-## Contenu
+## Contents
 
 ```
-.claude-plugin/              manifestes du plugin et de la marketplace
+.claude-plugin/              plugin and marketplace manifests
 skills/orchestration-multi-sessions/
-  SKILL.md                   la méthode (rôles, vérifications, délégation, tableau, communication, design)
+  SKILL.md                   the method (roles, checks, delegation, tracker, communication, design)
   templates/                 CLAUDE-orchestration.md, PROMPT.md, RETURN.md, MEMORY.md, BACKLOG.md
-  tracker/index.html         le tableau de suivi, à publier comme artifact claude.ai (capacités db et user)
-GUIDE-PO.md                  le guide du PO (rôles, mise en route, quotidien, délégation, conseils)
+  tracker/index.html         the tracker page, to publish as a claude.ai artifact (db and user capabilities)
+GUIDE-PO.md                  the PO guide (roles, getting started, daily routine, delegation, tips)
 commands/
-  orch-init.md               /orch-init : initialiser ou adopter la méthode sur un projet
-  orch-status.md             /orch-status : point d'état des sessions, worktrees et tableau
+  orch-init.md               /orch-init: set up the method on a new or existing project
+  orch-status.md             /orch-status: status of sessions, worktrees and tracker
 ```
+
+The skill, templates and PO guide are currently written in French; Claude reads them in any language and answers
+in yours.
 
 ## Installation
 
-Depuis un dossier local :
-
-```powershell
-claude plugin marketplace add C:\chemin\vers\orch-kit
-claude plugin install orch-kit@orch-kit --scope user
-```
-
-Depuis GitHub :
+From GitHub:
 
 ```powershell
 claude plugin marketplace add Eva-Technology-Services/orch-kit
 claude plugin install orch-kit@orch-kit --scope user
 ```
 
-Le plugin ne contient que du texte et une page HTML : aucun script, aucun hook, aucun serveur.
+From a local folder:
 
-## Démarrer
+```powershell
+claude plugin marketplace add C:\path\to\orch-kit
+claude plugin install orch-kit@orch-kit --scope user
+```
 
-1. Ouvrir Claude Code à la racine du projet et taper `/orch-init <Nom du projet>`.
-2. Valider le découpage en sessions et la matrice de délégation proposés.
-3. Ouvrir une session par lettre dans son worktree et lui envoyer son prompt depuis le tableau (ou laisser l'ORCH
-   l'envoyer, si la délégation le permet).
-4. `/orch-status` à tout moment.
+The plugin contains only text and one HTML page: no scripts, no hooks, no servers.
 
-## Bonnes pratiques retenues
+## Getting started
 
-- Vérifier chaque retour soi-même ; un correctif d'intégration minimal à la fusion est signalé, pas caché.
-- Une seule session écrit les migrations à la fois.
-- Secrets dans les variables d'environnement de l'utilisateur, jamais affichés ni écrits.
-- Machine partagée : vérifier la mémoire avant un run lourd, préférer des e2e ciblés.
-- Qualité du design : critique des captures, skills de design vérifiés, deux directions sur écrans pilotes avant
-  de généraliser.
-- Un skill tiers s'installe seulement après lecture de tous ses fichiers.
+1. Open Claude Code at the root of your project and type `/orch-init <Project name>`.
+2. Approve or adjust the proposed sessions and delegation matrix.
+3. Open one Claude Code session per letter in its worktree and give it its prompt from the tracker, or let the ORCH
+   send it directly if the delegation allows it.
+4. Type `/orch-status` at any time.
 
-## Auteur et licence
+## Lessons learned
 
-Conçu par Abderrahim Akkour, Eva Technology Services. Licence MIT (voir `LICENSE`).
+- Check every return yourself; a minimal integration fix at merge time is reported, never hidden.
+- Only one session writes database migrations at a time.
+- Secrets live in the user's environment variables, never displayed or written down.
+- On a shared machine, check free memory before heavy runs and prefer targeted end-to-end tests.
+- Design quality: critique the screenshots, use vetted design skills, and explore two directions on two pilot
+  screens before rolling out.
+- Install a third-party skill only after reading all its files.
+
+## Author and license
+
+Designed by Abderrahim Akkour, Eva Technology Services. MIT license (see `LICENSE`).
