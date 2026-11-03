@@ -115,7 +115,7 @@ Une étape = une action vérifiable. Champs : `ordre` (`#n`), `type` (`sql`, `po
 `{ "nom": "<Projet>", "sessions": ["A", "B", "…", "PO"] }` : titre et filtres du tableau.
 
 ### 5.4 Créer le tableau d'un projet
-1. Publier `tracker/index.html` de ce skill comme **nouvel** artifact (titre `Suivi <Projet>`, capacités `db` et `user`, icône), ou dupliquer le modèle de l'organisation s'il existe. Ne jamais republier sur le modèle.
+1. Publier `tracker/index.html` (ou `tracker/index.en.html` en anglais) de ce skill comme **nouvel** artifact (titre `Suivi <Projet>`, capacités `db` et `user`, icône), ou dupliquer le modèle de l'organisation s'il existe. Ne jamais republier sur le modèle.
 2. Écrire `config/projet`.
 3. Ajouter l'URL au CLAUDE.md.
 Sans artifact possible : `templates/BACKLOG.md` dans le dépôt, mêmes champs.

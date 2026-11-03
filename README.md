@@ -18,6 +18,21 @@ keeps the decisions.
 - **Direct communication**: on the same machine, the ORCH reaches the other sessions (`ListAgents`, `SendMessage`),
   sends ordinary prompts and receives returns without any copy-paste.
 
+## The tracker
+
+A shared claude.ai page, on desktop and mobile, light and dark. Screenshots from a fictional project
+("Fieldline", a scheduling app for field technicians).
+
+![Desktop: prompts on the left, the PO's steps on the right](docs/images/tracker-desktop.png)
+
+| Prompts to process (dark mode) | The PO's steps on mobile |
+| --- | --- |
+| ![Return to process, dark mode](docs/images/tracker-desktop-dark.png) | ![To execute, mobile](docs/images/tracker-mobile-execute.png) |
+
+Each prompt card shows its session, its go-live impact, its status and the ORCH's note after checking the return.
+Each PO step shows its type (SQL, PowerShell, manual), its environment, the commands to copy, the expected result,
+and the result pasted back, including failures.
+
 ## Contents
 
 ```
@@ -25,7 +40,8 @@ keeps the decisions.
 skills/orchestration-multi-sessions/
   SKILL.md                   the method (roles, checks, delegation, tracker, communication, design)
   templates/                 CLAUDE-orchestration.md, PROMPT.md, RETURN.md, MEMORY.md, BACKLOG.md
-  tracker/index.html         the tracker page, to publish as a claude.ai artifact (db and user capabilities)
+  tracker/index.html         the tracker page in French, to publish as a claude.ai artifact (db and user capabilities)
+  tracker/index.en.html      the same tracker in English
 GUIDE-PO.md                  the PO guide (roles, getting started, daily routine, delegation, tips)
 commands/
   orch-init.md               /orch-init: set up the method on a new or existing project
