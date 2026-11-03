@@ -25,6 +25,9 @@ This project uses the `orchestration-multi-sessions` skill.
 - Source of truth: `main`. Each session works in its worktree `<path>\<Project>-<letter>` (branch
   `feat/<topic>`) and does not merge: the ORCH merges. No push without the PO's request.
 - Migrations: written by only one session at a time (<letter>).
+- Risk zones: `.claude/risk-zones.json` (migrations, auth, security, payments, deploy, env files), enforced by the
+  `guard-risk-zones` PreToolUse hook. Each prompt grants its zones; the ORCH writes them in the worktree's
+  `.claude/risk-allow.local.json`. A session that drifts into another zone messages the ORCH before editing.
 - Validations: <format, lint, typecheck, tests, build, e2e, size check…>.
 - Return format: the skill's `templates/RETURN.md` ("RETURN SESSION X: P-xxx" block).
 - Delegation to the ORCH (approved by the PO on <date>):

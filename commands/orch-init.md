@@ -12,17 +12,22 @@ Project: $ARGUMENTS (otherwise, infer the name from the repository and confirm i
    - the split into sessions (letter, domain, forbidden scope) suited to this project;
    - the environments and the promotion order;
    - the skill's default delegation matrix (section 3.4), to approve or adjust;
-   - who writes the migrations.
+   - who writes the migrations;
+   - the risk zones (start from `templates/hooks/risk-zones.json`, adapted to the repository's real paths) and
+     whether to install the guard hook (it is a Node script that runs on every file edit: say so).
 3. After approval:
    - add the section from `templates/CLAUDE-orchestration.md`, filled in, to the CLAUDE.md (if a safeguard blocks
      writing the CLAUDE.md, give the text to the PO so they save it);
    - create the tracker: publish the skill's `tracker/index.en.html` (or `tracker/index.html` in French) as a
      new artifact "Tracker <Project>" (`db` and `user` capabilities), write `config/projet`, add the URL to the
      CLAUDE.md; if no artifact is possible, create `docs/pilotage/BACKLOG.md` from `templates/BACKLOG.md`;
+   - if the PO approved the guard: copy `templates/hooks/guard-risk-zones.mjs` to `.claude/hooks/`, the adapted
+     zones to `.claude/risk-zones.json`, merge `templates/hooks/settings.json` into `.claude/settings.json`, add
+     `.claude/risk-allow.local.json` to `.gitignore`, and test one allowed and one refused edit;
    - create the ORCH memory from `templates/MEMORY.md`;
    - write the first prompts (structure `templates/PROMPT.md`) and the PO steps (opening the worktrees
      and the sessions).
 4. Tell the PO, in a few lines: what is in place, the tracker URL, their first actions.
 
 On a project already orchestrated: compare its "Orchestration" section with the current template and propose only
-the additions (delegation, direct communication, memory checks, design quality).
+the additions (delegation, direct communication, memory checks, design quality, risk zones and guard hook).

@@ -53,7 +53,18 @@ The detailed method, for Claude, is in `skills/orchestration-multi-sessions/SKIL
 | Scripts on the dev environment | New public texts | Consoles the ORCH cannot reach |
 | Sending prompts and receiving returns | Irreversible deletions, exceptions to rules | Physical actions |
 
-## 6. Tips from practice
+## 6. Risk zones: when a task drifts
+
+Some areas are risky whatever the task: database migrations, authentication, security headers, payments,
+deployment, environment files. They are listed in the project (`.claude/risk-zones.json`), and each prompt says
+which ones the session may touch.
+
+- If a session needs another zone, it stops and messages the ORCH before editing. The ORCH grants, refuses, or
+  asks you.
+- If the guard hook is installed, Claude Code also asks for your approval on any edit in a zone that session was
+  not cleared for. If you see such a request without a word from the ORCH, refuse it and ask the ORCH.
+
+## 7. Tips from practice
 
 - **One session = one domain = one git folder.** Conflicts come from shared files: the ORCH sequences the
   sessions that touch the same files.

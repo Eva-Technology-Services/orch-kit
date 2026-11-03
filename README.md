@@ -40,6 +40,7 @@ and the result pasted back, including failures.
 skills/orchestration-multi-sessions/
   SKILL.md                   the method (roles, checks, delegation, tracker, communication, design)
   templates/                 CLAUDE-orchestration.md, PROMPT.md, RETURN.md, MEMORY.md, BACKLOG.md
+  templates/hooks/           optional guard: risk zones, PreToolUse hook, settings snippet
   tracker/index.html         the tracker page in French, to publish as a claude.ai artifact (db and user capabilities)
   tracker/index.en.html      the same tracker in English
 GUIDE-PO.md                  the PO guide (roles, getting started, daily routine, delegation, tips)
@@ -68,7 +69,8 @@ claude plugin marketplace add C:\path\to\orch-kit
 claude plugin install orch-kit@orch-kit --scope user
 ```
 
-The plugin contains only text and one HTML page: no scripts, no hooks, no servers.
+Installing the plugin runs nothing: it contains text, one HTML page and an **optional** guard script. That script
+runs only in a project where `/orch-init` installs it, after you approve it (see "Catching drift" below).
 
 ## Getting started
 
@@ -77,6 +79,21 @@ The plugin contains only text and one HTML page: no scripts, no hooks, no server
 3. Open one Claude Code session per letter in its worktree and give it its prompt from the tracker, or let the ORCH
    send it directly if the delegation allows it.
 4. Type `/orch-status` at any time.
+
+## Catching drift while it happens
+
+A task can change risk in the middle: a session starts on a plain endpoint and drifts toward authentication or the
+database. Checking the diff at delivery is too late for that, so the kit adds three layers:
+
+1. **Declared risk zones**: `.claude/risk-zones.json` lists risky paths (migrations, auth, security headers,
+   payments, deployment, environment files). Each prompt says which zones the session may touch.
+2. **Immediate alert**: a session that needs another zone stops and messages the ORCH (file, zone, why) before
+   editing. The ORCH grants it, refuses it, or brings it to the PO.
+3. **Hard stop**: a small PreToolUse hook (`guard-risk-zones.mjs`, Node, no dependency, no network) asks for human
+   approval on any edit in a zone the session's worktree is not cleared for, and tells the session to alert the
+   ORCH. The clearance lives in each worktree's `.claude/risk-allow.local.json`, written by the ORCH.
+
+The diff check at delivery stays, as the last line of defense.
 
 ## Lessons learned
 

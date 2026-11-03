@@ -1,7 +1,7 @@
 {
   "name": "orch-kit",
   "description": "Méthode ORCH/PO pour piloter un projet avec plusieurs sessions Claude Code spécialisées : skill d'orchestration, modèles (CLAUDE.md, prompt, retour, mémoire, backlog), tableau de suivi, commandes /orch-init et /orch-status.",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "author": { "name": "Abderrahim Akkour", "url": "https://github.com/Eva-Technology-Services" },
   "homepage": "https://github.com/Eva-Technology-Services/orch-kit",
   "repository": "https://github.com/Eva-Technology-Services/orch-kit",

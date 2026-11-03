@@ -16,6 +16,10 @@ PO decisions.>
 ## Scope exception (if needed)
 You may modify <exact file> for <reason>, as little as possible.
 
+## Risk zones
+Granted: <none | migrations | auth | …> (the ORCH writes them in `.claude/risk-allow.local.json` of your worktree).
+If the task needs another zone, stop and message the ORCH (file, zone, why) before editing it.
+
 ## To do
 1. **<Title>**: <expected result, verifiable>.
 2. …

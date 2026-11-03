@@ -89,14 +89,22 @@ Irreversible, production or shared environment, money, visible to a customer or 
 ### 3.6 Shared machine
 Several sessions on the same machine use up its memory. Before a heavy run (full e2e, deployment build): check free memory and the other sessions' running jobs. Prefer targeted e2e runs with `--workers=1` or `2`; a run killed by the system is not a test failure and is not restarted automatically. Suggest that the PO close finished sessions.
 
+### 3.7 Risk zones: catch drift while it happens
+A task can change risk in the middle: a session starts on a plain endpoint and drifts toward authentication or the database. Checking the diff at delivery is too late for that. Three layers:
+1. **Declared zones.** `.claude/risk-zones.json` (template `templates/hooks/risk-zones.json`, committed) lists the risky areas by path: migrations, auth, security headers, payments, deployment, environment files. Each prompt says which zones the session may touch (`Risk zones: migrations` or `Risk zones: none`).
+2. **Immediate alert.** A session that needs a zone its prompt did not grant stops and sends the ORCH a short message (file, zone, why) before editing it. The ORCH answers: grant it (and record it in the card), refuse, or escalate to the PO under 3.5. It does not wait for the return.
+3. **Hard stop.** The PreToolUse hook `templates/hooks/guard-risk-zones.mjs` (registered by `templates/hooks/settings.json` in the project's `.claude/settings.json`) answers "ask" on any edit inside a zone the worktree is not cleared for, with the instruction to alert the ORCH. The clearance of a worktree is `.claude/risk-allow.local.json` (`{"session":"B","allow":["migrations"]}`, not committed), written by the ORCH when it opens the worktree for a prompt that grants the zone. Editing either config file is always guarded.
+At delivery, the ORCH still checks the diff against the granted zones. The hook is code that runs on the user's machine: `/orch-init` installs it only after the PO approves.
+
 ## 4. Specialized session role
 1. Read the whole prompt; anything ambiguous or out of scope goes in the return.
-2. Work on your branch in your worktree; check the actual schema before any migration.
-3. Never apply a migration or deploy without a written, explicit delegation (environment, files, order, checks, stopping point).
-4. For a migration: the file, its rollback, a blocking pre-check and an effect check.
-5. For an action reserved for the PO: the exact commands and what to send back.
-6. Rebase on the source of truth, validations green (or explain why a run could not run), do not merge.
-7. Return in the `templates/RETURN.md` format. If the ORCH asks for it by direct message, send the full block back through the same channel.
+2. **Drift**: if the task needs a risk zone the prompt did not grant (section 3.7), stop and message the ORCH before editing it; never edit the risk-zone config files.
+3. Work on your branch in your worktree; check the actual schema before any migration.
+4. Never apply a migration or deploy without a written, explicit delegation (environment, files, order, checks, stopping point).
+5. For a migration: the file, its rollback, a blocking pre-check and an effect check.
+6. For an action reserved for the PO: the exact commands and what to send back.
+7. Rebase on the source of truth, validations green (or explain why a run could not run), do not merge.
+8. Return in the `templates/RETURN.md` format. If the ORCH asks for it by direct message, send the full block back through the same channel.
 
 ## 5. Tracker (claude.ai artifact)
 

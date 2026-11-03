@@ -1,0 +1,10 @@
+{
+  "zones": [
+    { "id": "migrations", "label": "database migrations and schema", "paths": ["supabase/migrations/**", "**/migrations/**", "**/*.sql"] },
+    { "id": "auth", "label": "authentication and sessions", "paths": ["**/auth/**", "**/auth.*", "**/middleware.*", "**/proxy.*"] },
+    { "id": "security", "label": "security headers, CSP and permissions", "paths": ["**/security-headers.*", "**/_headers", "**/*policy*"] },
+    { "id": "payments", "label": "payments and billing", "paths": ["**/payments/**", "**/billing/**", "**/stripe*"] },
+    { "id": "deploy", "label": "deployment and CI", "paths": [".github/**", "**/wrangler.*", "**/Dockerfile*", "**/deploy*"] },
+    { "id": "secrets", "label": "environment files", "paths": ["**/.env", "**/.env.*"] }
+  ]
+}

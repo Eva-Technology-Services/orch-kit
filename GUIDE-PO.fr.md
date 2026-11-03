@@ -54,7 +54,18 @@ La méthode détaillée, pour Claude, est dans `skills/orchestration-multi-sessi
 | Scripts sur l'environnement de dev | Nouveaux textes publics | Consoles inaccessibles à l'ORCH |
 | Envoi des prompts et réception des retours | Suppressions irréversibles, dérogations | Actions physiques |
 
-## 6. Conseils tirés de la pratique
+## 6. Zones à risque : quand une tâche dérive
+
+Certaines zones sont risquées quelle que soit la tâche : migrations de base, authentification, en-têtes de
+sécurité, paiements, déploiement, fichiers d'environnement. Elles sont listées dans le projet
+(`.claude/risk-zones.json`), et chaque prompt dit lesquelles la session peut toucher.
+
+- Si une session a besoin d'une autre zone, elle s'arrête et écrit à l'ORCH avant de modifier quoi que ce soit.
+  L'ORCH accorde, refuse, ou vous demande.
+- Si le garde-fou est installé, Claude Code vous demande aussi votre accord pour toute modification dans une zone
+  non accordée à cette session. Si une telle demande arrive sans message de l'ORCH, refusez et interrogez l'ORCH.
+
+## 7. Conseils tirés de la pratique
 
 - **Une session = un domaine = un dossier git.** Les conflits viennent des fichiers partagés : l'ORCH séquence
   les sessions qui touchent les mêmes fichiers.
