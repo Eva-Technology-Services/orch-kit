@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "orch-kit",
+  "metadata": { "description": "Méthode ORCH/PO multi-sessions pour Claude Code." },
+  "owner": { "name": "Eva Technology Services", "url": "https://github.com/Eva-Technology-Services" },
+  "plugins": [
+    {
+      "name": "orch-kit",
+      "description": "Skill d'orchestration multi-sessions, modèles, tableau de suivi, /orch-init et /orch-status.",
+      "version": "2.0.0",
+      "source": "./",
+      "category": "productivity",
+      "tags": ["orchestration", "multi-session", "project-management", "tracker"]
+    }
+  ]
+}

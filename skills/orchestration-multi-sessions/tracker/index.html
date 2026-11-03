@@ -1,0 +1,361 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Modèle suivi ORCH</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: prompt cards on the left, SQL scripts panel on the right (wide screens); on narrow screens a top switch shows one or the other. */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --fg:#14181f; --muted:#5b6472; --line:#dde1e7;
+  --accent:#2457d6; --accent-ink:#ffffff;
+  --st-send:#b45309; --st-send-bg:#fff4e5;
+  --st-sent:#1d4ed8; --st-sent-bg:#e8efff;
+  --st-back:#7c3aed; --st-back-bg:#f2ebff;
+  --st-done:#15803d; --st-done-bg:#e7f6ec;
+  --st-off:#6b7280; --st-off-bg:#eef0f3;
+  --gl-block:#b91c1c; --gl-block-bg:#fdecec;
+  --font:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1318; --surface:#171c23; --fg:#e8ebf0; --muted:#9aa3b2; --line:#2a313b;
+  --accent:#6b93ff; --accent-ink:#0b1020;
+  --st-send:#f5b25c; --st-send-bg:#33240f; --st-sent:#8fb0ff; --st-sent-bg:#18233d;
+  --st-back:#c4a5ff; --st-back-bg:#2a1f42; --st-done:#6fd394; --st-done-bg:#15301f;
+  --st-off:#a1a8b3; --st-off-bg:#232a33; --gl-block:#fca5a5; --gl-block-bg:#3a1717; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1318; --surface:#171c23; --fg:#e8ebf0; --muted:#9aa3b2; --line:#2a313b;
+  --accent:#6b93ff; --accent-ink:#0b1020;
+  --st-send:#f5b25c; --st-send-bg:#33240f; --st-sent:#8fb0ff; --st-sent-bg:#18233d;
+  --st-back:#c4a5ff; --st-back-bg:#2a1f42; --st-done:#6fd394; --st-done-bg:#15301f;
+  --st-off:#a1a8b3; --st-off-bg:#232a33; --gl-block:#fca5a5; --gl-block-bg:#3a1717; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.col{min-width:0}
+header.ph{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:12px max(16px,env(safe-area-inset-left,0px)) 10px}
+.views{display:flex;gap:6px;margin-bottom:10px}
+.view{flex:1 1 0;font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:8px;min-height:44px;cursor:pointer}
+.view[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.view .n{font-family:var(--mono);font-size:12px;margin-left:6px}
+h1,h2{font-size:18px;margin:0;font-weight:600;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px;margin:2px 0 10px}
+.sessions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.sess{font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:6px 10px;min-height:32px;cursor:pointer}
+.sess[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.sess b{font-weight:500}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tab{flex:0 0 auto;border:0;background:transparent;color:var(--muted);font:inherit;font-size:14px;padding:8px 10px;border-radius:8px;min-height:40px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--bg);color:var(--fg);font-weight:600}
+.tab .n{font-family:var(--mono);font-size:12px;margin-left:4px}
+main,.slist{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pid{font-family:var(--mono);font-size:13px;color:var(--accent)}
+.who{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;margin-left:auto}
+.s-a_envoyer,.s-a_executer{color:var(--st-send);background:var(--st-send-bg)}
+.s-envoye{color:var(--st-sent);background:var(--st-sent-bg)}
+.s-retour{color:var(--st-back);background:var(--st-back-bg)}
+.s-traite,.s-execute{color:var(--st-done);background:var(--st-done-bg)}
+.s-annule,.s-reporte{color:var(--st-off);background:var(--st-off-bg)}
+.s-echec{color:var(--gl-block);background:var(--gl-block-bg)}
+.gl{font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 7px;border:1px solid currentColor;white-space:nowrap}
+.gl-bloquant{color:var(--gl-block);background:var(--gl-block-bg)}
+.gl-apres{color:var(--st-off);background:var(--st-off-bg)}
+.env{font-family:var(--mono);font-size:11.5px;font-weight:500;border-radius:6px;padding:2px 7px;border:1px solid currentColor;white-space:nowrap}
+.env-sandbox{color:var(--st-done);background:var(--st-done-bg)}
+.env-preprod{color:var(--st-send);background:var(--st-send-bg)}
+.env-prod{color:var(--gl-block);background:var(--gl-block-bg)}
+.env-autre{color:var(--st-off);background:var(--st-off-bg)}
+.typ{font-family:var(--mono);font-size:11.5px;font-weight:500;border-radius:6px;padding:2px 7px;background:var(--fg);color:var(--bg);white-space:nowrap}
+.ord{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.glnote{font-size:12.5px;color:var(--muted)}
+.obj{font-weight:600;margin:0}
+.meta{color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}
+.meta code{font-family:var(--mono);font-size:12px;color:var(--fg)}
+.note{font-size:13.5px;color:var(--fg);background:var(--bg);border-radius:8px;padding:8px 10px}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:13px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;overflow-wrap:anywhere}
+.res{font-size:13px;border-left:3px solid var(--st-done);padding:6px 10px;background:var(--bg);border-radius:0 8px 8px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.res.ko{border-left-color:var(--gl-block)}
+details summary{cursor:pointer;color:var(--muted);font-size:13px;min-height:28px}
+pre{font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0 0;max-height:320px;overflow:auto}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button.act{font:inherit;font-size:14px;border-radius:8px;padding:8px 12px;min-height:44px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+button.act.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.act.danger{color:var(--gl-block);border-color:var(--gl-block)}
+button.act:disabled{opacity:.5;cursor:default}
+.ask{display:flex;flex-direction:column;gap:8px}
+.ask label{font-size:13px;color:var(--muted)}
+.ask textarea{font-family:var(--mono);font-size:12.5px;width:100%;min-height:90px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);color:var(--fg);resize:vertical}
+button:focus-visible,.sess:focus-visible,.tab:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.empty{color:var(--muted);text-align:center;padding:40px 12px;border:1px dashed var(--line);border-radius:12px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20}
+.legend{color:var(--muted);font-size:12.5px;margin-top:18px;line-height:1.6}
+@media (min-width:1100px){
+  .views{display:none}
+  .layout{grid-template-columns:minmax(0,1fr) minmax(0,460px)}
+  .col[hidden]{display:block!important}
+  aside.col{position:sticky;top:env(safe-area-inset-top,0px);max-height:calc(100vh - env(safe-area-inset-top,0px));overflow:auto;padding-bottom:24px}
+  aside header.ph{margin:0;padding-left:14px;padding-right:14px;border-left:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="layout">
+    <section class="col" id="colPrompts">
+      <header class="ph">
+        <div class="views" role="tablist" aria-label="Vue">
+          <button class="view" role="tab" id="vP" aria-selected="true">Prompts<span class="n" id="vPn"></span></button>
+          <button class="view" role="tab" id="vS" aria-selected="false">À exécuter<span class="n" id="vSn"></span></button>
+        </div>
+        <h1 id="ptitle">Suivi des prompts ORCH</h1>
+        <p class="sub" id="sub">Chaque prompt a un numéro P-xxx. Copier un prompt le marque « Envoyé ».</p>
+        <div class="sessions" id="sessions" role="group" aria-label="Filtrer par session"></div>
+        <div class="tabs" role="tablist" id="tabs"></div>
+      </header>
+      <main id="list" aria-live="polite">
+        <div class="empty">Chargement des prompts…</div>
+      </main>
+      <p class="legend">Flux : <b>À envoyer</b> → tu copies le prompt et le colles dans la session → <b>Envoyé</b> → la session répond en commençant par « [RETOUR P-xxx] » → tu marques <b>Retour reçu</b> et tu colles le retour à ORCH → ORCH le traite et passe la carte en <b>Traité</b>.</p>
+    </section>
+
+    <aside class="col" id="colScripts" hidden>
+      <header class="ph">
+        <div class="views" role="tablist" aria-label="Vue">
+          <button class="view" role="tab" id="vP2" aria-selected="false">Prompts<span class="n" id="vPn2"></span></button>
+          <button class="view" role="tab" id="vS2" aria-selected="true">À exécuter<span class="n" id="vSn2"></span></button>
+        </div>
+        <h2>À exécuter par le PO</h2>
+        <p class="sub">Dans l'ordre affiché. SQL : dans le SQL Editor du projet indiqué (vérifie la référence). PowerShell : dans le dossier indiqué. Manuel : l'action décrite.</p>
+        <div class="tabs" role="tablist" id="stabs"></div>
+      </header>
+      <div class="slist" id="slist" aria-live="polite">
+        <div class="empty">Chargement des scripts…</div>
+      </div>
+      <p class="legend">Flux : <b>À exécuter</b> → « Copier » → colle dans le SQL Editor ou dans PowerShell (ou fais l'action manuelle) → <b>Exécuté</b> (colle le résultat) ou <b>Échec</b> (colle l'erreur) → ORCH lit le résultat ici.</p>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const STATUS = {
+  a_envoyer:{label:"À envoyer"}, envoye:{label:"Envoyé"}, retour:{label:"Retour reçu"},
+  traite:{label:"Traité"}, annule:{label:"Annulé"}
+};
+const TABS = [
+  {id:"todo", label:"À faire", match:s=>s==="a_envoyer"},
+  {id:"wait", label:"En attente de retour", match:s=>s==="envoye"},
+  {id:"back", label:"Retour à traiter", match:s=>s==="retour"},
+  {id:"done", label:"Terminés", match:s=>s==="traite"||s==="annule"},
+  {id:"all", label:"Tout", match:()=>true}
+];
+const SSTATUS = {a_executer:{label:"À exécuter"}, execute:{label:"Exécuté"}, echec:{label:"Échec"}, reporte:{label:"Reporté"}};
+const STABS = [
+  {id:"todo", label:"À exécuter", match:s=>s==="a_executer"||s==="echec"},
+  {id:"later", label:"Reportés", match:s=>s==="reporte"},
+  {id:"done", label:"Exécutés", match:s=>s==="execute"},
+  {id:"all", label:"Tout", match:()=>true}
+];
+const ENVS = {sandbox:"env-sandbox", preprod:"env-preprod", prod:"env-prod"};
+const TYPES = {sql:{label:"SQL",copy:"Copier le SQL",where:"le SQL Editor"}, powershell:{label:"PowerShell",copy:"Copier les commandes",where:"PowerShell"}, manuel:{label:"Manuel",copy:"",where:""}};
+function typeOf(r){return TYPES[r.type]?r.type:"sql"}
+function codeOf(r){return r.code||r.sql||""}
+/* Modèle générique : le nom du projet et la liste des sessions viennent du document config/projet ({nom, sessions:[...]}).
+   Sans ce document, les sessions sont déduites des cartes. */
+let SESSIONS = [];
+let projet = null;
+function sessionsList(){if(projet&&Array.isArray(projet.sessions)&&projet.sessions.length)return projet.sessions;const s=[...new Set(rows.map(r=>r.session).filter(Boolean))].sort();return s}
+let rows = [], scripts = [], tab = "todo", stab = "todo", sess = null, db = null, canWrite = true, view = "prompts", asking = null;
+
+function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+const savedTab = safeGet("orch-tab"); if (savedTab && TABS.some(t=>t.id===savedTab)) tab = savedTab;
+const savedSTab = safeGet("orch-stab"); if (savedSTab && STABS.some(t=>t.id===savedSTab)) stab = savedSTab;
+const savedView = safeGet("orch-view"); if (savedView==="scripts") view = "scripts";
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>{t.hidden=true},2400)}
+function fmt(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return"";return d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
+function el(tag,attrs={},kids=[]){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="class")e.className=v;else if(k==="text")e.textContent=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v)}for(const c of[].concat(kids))if(c!=null&&c!==false)e.append(c);return e}
+
+function setView(v){view=v;safeSet("orch-view",v);applyView()}
+function applyView(){
+  document.getElementById("colPrompts").hidden = view!=="prompts";
+  document.getElementById("colScripts").hidden = view!=="scripts";
+  for(const id of ["vP","vP2"])document.getElementById(id).setAttribute("aria-selected",String(view==="prompts"));
+  for(const id of ["vS","vS2"])document.getElementById(id).setAttribute("aria-selected",String(view==="scripts"));
+}
+for(const id of ["vP","vP2"])document.getElementById(id).addEventListener("click",()=>setView("prompts"));
+for(const id of ["vS","vS2"])document.getElementById(id).addEventListener("click",()=>setView("scripts"));
+
+function counts(){
+  const p=rows.filter(r=>r.statut==="a_envoyer"||r.statut==="retour").length;
+  const s=scripts.filter(r=>r.statut==="a_executer"||r.statut==="echec").length;
+  for(const id of ["vPn","vPn2"])document.getElementById(id).textContent=p?String(p):"";
+  for(const id of ["vSn","vSn2"])document.getElementById(id).textContent=s?String(s):"";
+}
+
+/* ───── Prompts ───── */
+function renderHeader(){
+  const sWrap=document.getElementById("sessions");sWrap.replaceChildren();
+  sWrap.append(el("button",{class:"sess","aria-pressed":String(sess===null),onclick:()=>{sess=null;render()}},[el("b",{text:"Toutes"})]));
+  for(const s of sessionsList()){
+    const open=rows.filter(r=>r.session===s&&(r.statut==="a_envoyer"||r.statut==="envoye"||r.statut==="retour")).length;
+    sWrap.append(el("button",{class:"sess","aria-pressed":String(sess===s),onclick:()=>{sess=sess===s?null:s;render()}},[el("b",{text:s}),document.createTextNode(open?" · "+open:"")]));
+  }
+  const tWrap=document.getElementById("tabs");tWrap.replaceChildren();
+  for(const t of TABS){
+    const n=rows.filter(r=>(sess===null||r.session===sess)&&t.match(r.statut)).length;
+    tWrap.append(el("button",{class:"tab",role:"tab","aria-selected":String(tab===t.id),onclick:()=>{tab=t.id;safeSet("orch-tab",tab);render()}},[document.createTextNode(t.label),el("span",{class:"n",text:String(n)})]));
+  }
+}
+
+async function setStatus(r,statut,extra={}){
+  if(!db){toast("Base indisponible : statut non enregistré");return false}
+  const now=new Date().toISOString();
+  const patch={statut,updated_at:now,...extra};
+  if(statut==="envoye"&&!r.sent_at)patch.sent_at=now;
+  if(statut==="retour")patch.back_at=now;
+  try{await db.doc("prompts/"+r._id).update(patch);return true}
+  catch(e){if(e&&e.code==="invalid_argument"){canWrite=false;render();toast("Lecture seule : tu ne peux pas modifier ce suivi")}else toast("Échec de l'enregistrement, réessaie");return false}
+}
+
+async function copyText(text,preId){
+  try{await navigator.clipboard.writeText(text||"");return true}catch(e){}
+  const d=document.getElementById(preId);
+  if(d){const det=d.closest("details");if(det)det.open=true;const range=document.createRange();range.selectNodeContents(d);const s=getSelection();s.removeAllRanges();s.addRange(range)}
+  toast("Copie bloquée : texte sélectionné, copie-le à la main");return false;
+}
+
+async function copyPrompt(r){
+  if(!await copyText(r.prompt,"pre-"+r._id))return;
+  if(r.statut==="a_envoyer"){await setStatus(r,"envoye");toast(r.id+" copié et marqué « Envoyé » → colle-le dans "+r.session)}
+  else toast(r.id+" copié");
+}
+
+function card(r){
+  const st=STATUS[r.statut]||STATUS.a_envoyer;
+  const kids=[
+    el("div",{class:"top"},[el("span",{class:"pid",text:r.id}),el("span",{class:"who",text:r.session})].concat(r.golive?[el("span",{class:"gl gl-"+r.golive,text:r.golive==="bloquant"?"Bloquant go-live":"Après go-live"})]:[]).concat([el("span",{class:"pill s-"+r.statut,text:st.label})])),
+    el("p",{class:"obj",text:r.objet||""})
+  ];
+  const meta=[];if(r.created_at)meta.push("créé "+fmt(r.created_at));if(r.sent_at)meta.push("envoyé "+fmt(r.sent_at));if(r.back_at)meta.push("retour "+fmt(r.back_at));
+  if(meta.length)kids.push(el("div",{class:"meta",text:meta.join(" · ")}));
+  if(r.golive_note)kids.push(el("div",{class:"glnote",text:(r.golive==="bloquant"?"Go-live : ":"Peut attendre : ")+r.golive_note}));
+  if(r.note)kids.push(el("div",{class:"note",text:r.note}));
+  if(r.prompt)kids.push(el("details",{},[el("summary",{text:"Voir le prompt"}),el("pre",{id:"pre-"+r._id,text:r.prompt})]));
+  const acts=el("div",{class:"actions"});
+  const dis=!canWrite||!db;
+  if(r.prompt&&r.statut==="a_envoyer")acts.append(el("button",{class:"act primary",onclick:()=>copyPrompt(r)},"Copier et marquer envoyé"));
+  else if(r.prompt)acts.append(el("button",{class:"act",onclick:()=>copyPrompt(r)},"Copier le prompt"));
+  if(!r.prompt&&r.statut==="a_envoyer"){const b=el("button",{class:"act primary",onclick:()=>setStatus(r,"traite")},"C'est fait");b.disabled=dis;acts.append(b)}
+  if(r.prompt&&r.statut==="a_envoyer"){const b=el("button",{class:"act",onclick:()=>setStatus(r,"envoye")},"Déjà envoyé");b.disabled=dis;acts.append(b)}
+  if(r.statut==="envoye"){const b=el("button",{class:"act primary",onclick:()=>setStatus(r,"retour")},"Retour reçu");b.disabled=dis;acts.append(b);const u=el("button",{class:"act",onclick:()=>setStatus(r,"a_envoyer",{sent_at:null})},"Pas encore envoyé");u.disabled=dis;acts.append(u)}
+  if(r.statut==="retour"){const b=el("button",{class:"act",onclick:()=>setStatus(r,"envoye",{back_at:null})},"Annuler « retour »");b.disabled=dis;acts.append(b)}
+  if(acts.childElementCount)kids.push(acts);
+  return el("article",{class:"card"},kids);
+}
+
+function render(){
+  renderHeader();counts();
+  const list=document.getElementById("list");
+  const t=TABS.find(x=>x.id===tab)||TABS[0];
+  const shown=rows.filter(r=>(sess===null||r.session===sess)&&t.match(r.statut))
+    .sort((a,b)=>(a.order??999)-(b.order??999)||String(a.id).localeCompare(String(b.id)));
+  list.replaceChildren();
+  if(!shown.length){list.append(el("div",{class:"empty",text:rows.length?"Rien dans cette vue.":"Aucun prompt pour l'instant. ORCH ajoutera ici chaque prompt qu'il te propose, avec son numéro P-xxx."}));return}
+  for(const r of shown)list.append(card(r));
+}
+
+/* ───── Scripts SQL ───── */
+async function setScript(r,patch){
+  if(!db){toast("Base indisponible : statut non enregistré");return false}
+  try{await db.doc("scripts/"+r._id).update({...patch,updated_at:new Date().toISOString()});return true}
+  catch(e){if(e&&e.code==="invalid_argument"){canWrite=false;renderScripts();toast("Lecture seule : tu ne peux pas modifier ce suivi")}else toast("Échec de l'enregistrement, réessaie");return false}
+}
+
+async function copySql(r){
+  const ty=TYPES[typeOf(r)];
+  if(await copyText(codeOf(r),"sql-"+r._id))toast((r.fichier||r.titre)+" copié → colle-le dans "+ty.where+(r.env?" ("+r.env+")":""));
+}
+
+function scriptCard(r){
+  const st=SSTATUS[r.statut]||SSTATUS.a_executer;
+  const envCls=ENVS[r.env]||"env-autre";
+  const kids=[
+    el("div",{class:"top"},[
+      r.ordre!=null?el("span",{class:"ord",text:"#"+r.ordre}):null,
+      el("span",{class:"typ",text:TYPES[typeOf(r)].label}),
+      r.env?el("span",{class:"env "+envCls,text:r.env}):null,
+      r.carte?el("span",{class:"pid",text:r.carte}):null,
+      el("span",{class:"pill s-"+r.statut,text:st.label})
+    ]),
+    el("p",{class:"obj",text:r.titre||r.fichier||""})
+  ];
+  const kv=el("dl",{class:"kv"});
+  const add=(k,v)=>{if(v){kv.append(el("dt",{text:k}),el("dd",{text:v}))}};
+  add("Fichier",r.fichier);add("Dossier",r.dossier);add("Projet",r.ref);add("Avant",r.prerequis);add("Attendu",r.attendu);
+  if(kv.childElementCount)kids.push(kv);
+  if(r.note)kids.push(el("div",{class:"note",text:r.note}));
+  const meta=[];if(r.created_at)meta.push("ajouté "+fmt(r.created_at));if(r.executed_at)meta.push((r.statut==="echec"?"échec ":"exécuté ")+fmt(r.executed_at));
+  if(meta.length)kids.push(el("div",{class:"meta",text:meta.join(" · ")}));
+  if(r.resultat)kids.push(el("div",{class:"res"+(r.statut==="echec"?" ko":""),text:r.resultat}));
+  const code=codeOf(r);
+  if(code){const short=code.split("\n").length<=12&&typeOf(r)!=="sql";const pre=el("pre",{id:"sql-"+r._id,text:code});kids.push(short?pre:el("details",{},[el("summary",{text:"Voir le "+(typeOf(r)==="sql"?"SQL":"code")+" ("+code.split("\n").length+" lignes)"}),pre]))}
+  const dis=!canWrite||!db;
+  if(asking&&asking.id===r._id){
+    const ta=el("textarea",{id:"res-"+r._id,placeholder:asking.kind==="execute"?"Colle ici le résultat affiché (NOTICE, lignes de contrôle…)":"Colle ici le message d'erreur"});
+    ta.value=asking.draft||"";ta.addEventListener("input",()=>{asking.draft=ta.value});
+    const save=el("button",{class:"act "+(asking.kind==="execute"?"primary":"danger"),onclick:async()=>{
+      const now=new Date().toISOString();
+      if(await setScript(r,{statut:asking.kind,resultat:ta.value.trim(),executed_at:now})){toast(asking.kind==="execute"?"Marqué « Exécuté »":"Marqué « Échec »");asking=null;renderScripts()}
+    }},asking.kind==="execute"?"Enregistrer « Exécuté »":"Enregistrer « Échec »");save.disabled=dis;
+    kids.push(el("div",{class:"ask"},[el("label",{for:"res-"+r._id,text:asking.kind==="execute"?"Résultat obtenu (facultatif)":"Erreur obtenue"}),ta,el("div",{class:"actions"},[save,el("button",{class:"act",onclick:()=>{asking=null;renderScripts()}},"Annuler")])]));
+    setTimeout(()=>ta.focus(),0);
+  }else{
+    const acts=el("div",{class:"actions"});
+    if(code&&r.statut!=="reporte")acts.append(el("button",{class:"act"+(r.statut==="a_executer"?" primary":""),onclick:()=>copySql(r)},TYPES[typeOf(r)].copy));
+    if(r.statut==="a_executer"||r.statut==="echec"){
+      const b=el("button",{class:"act"+(!code?" primary":""),onclick:()=>{asking={id:r._id,kind:"execute",draft:""};renderScripts()}},typeOf(r)==="manuel"?"Fait":"Exécuté");b.disabled=dis;acts.append(b);
+      if(r.statut==="a_executer"){const f=el("button",{class:"act danger",onclick:()=>{asking={id:r._id,kind:"echec",draft:""};renderScripts()}},"Échec");f.disabled=dis;acts.append(f)}
+    }
+    if(r.statut==="execute"||r.statut==="echec"){const u=el("button",{class:"act",onclick:()=>setScript(r,{statut:"a_executer",executed_at:null,resultat:null})},"Remettre « À exécuter »");u.disabled=dis;acts.append(u)}
+    if(acts.childElementCount)kids.push(acts);
+  }
+  return el("article",{class:"card"},kids);
+}
+
+function renderScripts(){
+  counts();
+  const tWrap=document.getElementById("stabs");tWrap.replaceChildren();
+  for(const t of STABS){
+    const n=scripts.filter(r=>t.match(r.statut)).length;
+    tWrap.append(el("button",{class:"tab",role:"tab","aria-selected":String(stab===t.id),onclick:()=>{stab=t.id;safeSet("orch-stab",stab);renderScripts()}},[document.createTextNode(t.label),el("span",{class:"n",text:String(n)})]));
+  }
+  const list=document.getElementById("slist");
+  const t=STABS.find(x=>x.id===stab)||STABS[0];
+  const shown=scripts.filter(r=>t.match(r.statut)).sort((a,b)=>(a.ordre??999)-(b.ordre??999)||String(a._id).localeCompare(String(b._id)));
+  list.replaceChildren();
+  if(!shown.length){list.append(el("div",{class:"empty",text:scripts.length?"Rien dans cette vue.":"Rien à exécuter pour l'instant. ORCH ajoutera ici chaque script SQL, commande PowerShell ou action manuelle, avec son ordre."}));return}
+  for(const r of shown)list.append(scriptCard(r));
+}
+
+(async()=>{
+  applyView();render();renderScripts();
+  db = window.claude ? await window.claude.use("db") : null;
+  if(!db){document.getElementById("sub").textContent="Base indisponible dans cette vue : lecture impossible. Ouvre la page connecté à claude.ai.";render();renderScripts();return}
+  try{const user=await window.claude.use("user");const c=user?await user.can("data.write"):null;if(c===false)canWrite=false}catch(e){}
+  const lost=err=>{document.getElementById("sub").textContent="Connexion à la base perdue ("+(err&&err.code||"erreur")+"). Recharge la page."};
+  db.collection("config").onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==="projet");projet=d?d.data():null;if(projet&&projet.nom){document.getElementById("ptitle").textContent="Suivi des prompts — "+projet.nom;document.title="Suivi "+projet.nom}render()},()=>{});
+  db.collection("prompts").onSnapshot(snap=>{rows=snap.docs.map(d=>({_id:d.id,...d.data()}));render()},lost);
+  db.collection("scripts").onSnapshot(snap=>{scripts=snap.docs.map(d=>({_id:d.id,...d.data()}));if(!asking)renderScripts();else counts()},lost);
+})();
+</script>
+
+</body></html>
