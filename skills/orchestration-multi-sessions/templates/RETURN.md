@@ -1,37 +1,37 @@
-<!-- Format de retour d'une session spécialisée. -->
+<!-- Return format of a specialized session. "RETOUR SESSION X : P-xxx" is accepted too. -->
 
-## RETOUR SESSION <lettre> : P-xxx
-Statut : terminé / partiel (pourquoi) / bloqué (pourquoi)
+## RETURN SESSION <letter>: P-xxx
+Status: done / partial (why) / blocked (why)
 
-Fait :
-- <ce qui a été livré, en phrases courtes>
+Done:
+- <what was delivered, in short sentences>
 
-Commits (branche feat/<sujet>, rebasée sur main <hash>) :
+Commits (branch feat/<topic>, rebased on main <hash>):
 - <hash> <type>(<scope>): <description>
 
-Fichiers clés :
-- <chemins>
+Key files:
+- <paths>
 
-Commandes de vérification lancées et résultat :
-- format:check, lint, typecheck, build : ✅/❌
-- tests : ✅ (n/n par paquet)
-- e2e : ✅ (n/n) — ou non lancé, et pourquoi
-- contrôles propres au projet (taille, migrations, déploiement à blanc…)
+Verification commands run and result:
+- format:check, lint, typecheck, build: ✅/❌
+- tests: ✅ (n/n per package)
+- e2e: ✅ (n/n) — or not run, and why
+- project-specific checks (size, migrations, deployment dry run…)
 
-À faire par le PO :
-- <commandes exactes avec leur dossier, scripts SQL avec l'environnement, actions manuelles ; jamais de secret>
+To do by the PO:
+- <exact commands with their folder, SQL scripts with the environment, manual actions; never a secret>
 
-Parcours manuel (si écrans) :
-| # | Action | Attendu |
+Manual walkthrough (if screens):
+| # | Action | Expected |
 
-Écarts au prompt ou au PRD :
-1. <écart et raison>
+Deviations from the prompt or the PRD:
+1. <deviation and reason>
 
-Questions pour le PO / l'ORCH :
-1. <question, avec la recommandation de la session>
+Questions for the PO / the ORCH:
+1. <question, with the session's recommendation>
 
-Risques / dettes :
-- <ce qui reste, pour qui>
+Risks / debts:
+- <what remains, for whom>
 
-Prochaines étapes :
+Next steps:
 1. <…>

@@ -1,35 +1,35 @@
-<!-- Structure d'un prompt de session, écrit en entier dans le tableau (collection prompts). -->
+<!-- Structure of a session prompt, written in full in the tracker (prompts collection). -->
 
 [ORCH P-xxx → X]
-Tu es la session X (<domaine>) de <Projet>, <une phrase sur le produit>. Je suis l'ORCH : je relis ton retour et je
-fusionne. <Ce qui a changé dans la source de vérité depuis le dernier prompt de X : fusions, correctifs
-d'intégration faits par l'ORCH, décisions du PO.>
+You are session X (<domain>) of <Project>, <one sentence about the product>. I am the ORCH: I read your return and I
+merge. <What changed in the source of truth since X's last prompt: merges, integration fixes made by the ORCH,
+PO decisions.>
 
-## Réponses à tes questions (si suite)
-1. <réponse ou décision du PO>
+## Answers to your questions (if follow-up)
+1. <answer or PO decision>
 
-## Préparation
-1. `git -C <chemin>\<Projet>-X checkout -b feat/<sujet> main`, puis l'installation des dépendances.
-2. À lire : <documents et sections précises>.
-3. Sessions en parallèle et fichiers à éviter : <qui travaille où>.
+## Preparation
+1. `git -C <path>\<Project>-X checkout -b feat/<topic> main`, then install the dependencies.
+2. To read: <documents and exact sections>.
+3. Parallel sessions and files to avoid: <who works where>.
 
-## Exception de périmètre (si besoin)
-Tu peux modifier <fichier précis> pour <raison>, au plus petit.
+## Scope exception (if needed)
+You may modify <exact file> for <reason>, as little as possible.
 
-## À faire
-1. **<Titre>** : <résultat attendu, vérifiable>.
+## To do
+1. **<Title>**: <expected result, verifiable>.
 2. …
 
 ## Tests
-<Tests unitaires et e2e attendus ; e2e ciblés et `--workers=2` si la mémoire manque.> Parcours manuel court pour le
-PO, et ce que l'ORCH doit vérifier en lecture seule.
+<Expected unit and e2e tests; targeted e2e and `--workers=2` if memory is short.> A short manual walkthrough for the
+PO, and what the ORCH should check read only.
 
-## Délégation (si besoin)
-<Environnement, fichiers exacts, ordre, contrôles, point d'arrêt.>
+## Delegation (if needed)
+<Environment, exact files, order, checks, stopping point.>
 
-## Interdits
-<Périmètres des autres sessions, production, secrets, déploiement…>
+## Forbidden
+<Other sessions' scopes, production, secrets, deployment…>
 
-## Fin
-Rebase sur `main`, <validations> au vert, ne fusionne pas. Retour « RETOUR SESSION X : P-xxx » au format du skill,
-avec <éléments spécifiques : captures, mesures, coûts, textes à relire…>.
+## End
+Rebase on `main`, <validations> green, do not merge. Return "RETURN SESSION X: P-xxx" in the skill's format,
+with <specific items: screenshots, measurements, costs, texts to review…>.

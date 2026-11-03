@@ -1,16 +1,16 @@
 ---
-description: Point d'état des sessions d'implémentation (sessions ouvertes, worktrees, tableau)
+description: Status check of the implementation sessions (open sessions, worktrees, tracker)
 ---
 
-Tu es l'ORCH (skill `orchestration-multi-sessions`). Fais le point, en lecture seule :
+You are the ORCH (`orchestration-multi-sessions` skill). Take stock, read only:
 
-1. `ListAgents` : sessions ouvertes sur ce poste pour ce projet, état busy/idle. Si leur lettre n'est pas connue,
-   envoie à chacune la question courte du skill (section 6) et attends leurs réponses.
-2. Pour chaque worktree du projet : branche, commits d'avance sur la source de vérité, fichiers modifiés, dernier
-   commit et son âge.
-3. Tableau : cartes `envoye` et `retour`, étapes du PO `a_executer` ou `echec`.
-4. Mémoire libre du poste et runs lourds en cours (e2e, builds).
+1. `ListAgents`: sessions open on this machine for this project, busy/idle state. If their letter is not known,
+   send each one the skill's short question (section 6) and wait for their answers.
+2. For each worktree of the project: branch, commits ahead of the source of truth, modified files, last
+   commit and its age.
+3. Tracker: cards `envoye` and `retour`, PO steps `a_executer` or `echec`.
+4. Free memory on the machine and heavy runs in progress (e2e, builds).
 
-Rends un tableau court (session, carte, état, prochaine action) puis la liste des actions : celles que tu fais
-toi-même selon la délégation, celles du PO dans l'ordre, et les décisions attendues. Propose de fermer les
-sessions terminées.
+Give a short table (session, card, state, next action), then the list of actions: those you do
+yourself under the delegation, the PO's in order, and the decisions awaited. Suggest closing the
+finished sessions.

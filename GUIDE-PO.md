@@ -1,65 +1,66 @@
-# Guide du PO : piloter un projet avec une ORCH et des sessions Claude Code
+*Version française : [GUIDE-PO.fr.md](GUIDE-PO.fr.md).*
 
-Ce guide s'adresse au PO, à l'architecte ou au tech lead qui pilote. Il décrit ce que vous faites au quotidien.
-La méthode détaillée, pour Claude, est dans `skills/orchestration-multi-sessions/SKILL.md`.
+# PO guide: run a project with an ORCH and Claude Code sessions
 
-## 1. Les rôles
+This guide is for the PO, architect or tech lead in charge. It describes what you do day to day.
+The detailed method, for Claude, is in `skills/orchestration-multi-sessions/SKILL.md`.
 
-| Qui | Fait | Ne fait pas |
+## 1. Roles
+
+| Who | Does | Does not |
 |---|---|---|
-| **Vous (PO)** | Décidez : périmètre, priorités, textes publics, argent, production. Gardez les secrets et les comptes. | Copier-coller mécaniquement (l'ORCH s'en charge si vous le déléguez). |
-| **ORCH** (une session Claude Code à la racine du projet) | Découpe en prompts, écrit tout dans le tableau, vérifie chaque retour, fusionne, vous résume les décisions. | Implémenter les fonctionnalités, décider à votre place sur ce qui est sensible. |
-| **Sessions spécialisées** (une par domaine, chacune dans son dossier git) | Implémentent leur prompt, testent, rendent un retour structuré. | Fusionner, sortir de leur périmètre. |
+| **You (PO)** | Decide: scope, priorities, public texts, money, production. Keep the secrets and accounts. | Copy and paste mechanically (the ORCH does it if you delegate it). |
+| **ORCH** (a Claude Code session at the project root) | Splits the work into prompts, writes everything in the tracker, checks every return, merges, sums up the decisions for you. | Implement features, or decide for you on anything sensitive. |
+| **Specialized sessions** (one per domain, each in its own git folder) | Implement their prompt, test, hand back a structured return. | Merge, or step outside their scope. |
 
-## 2. Mise en route (30 minutes)
+## 2. Getting started (30 minutes)
 
-1. Installez le kit (voir `README.md`), puis ouvrez Claude Code à la racine du projet.
-2. Tapez `/orch-init <Nom du projet>`. L'ORCH lit le projet et vous propose :
-   - les sessions (par exemple A fondations, B backend, D design, E intégration, H déploiement) ;
-   - les environnements (dev, préversion, production) ;
-   - la **matrice de délégation** : ce que l'ORCH fait seul, ce qu'il vous demande, ce que vous seul faites.
-3. Validez ou ajustez. L'ORCH crée le tableau de suivi (une page claude.ai) et vous donne son lien.
-4. Ouvrez une session Claude Code par lettre, dans le dossier que l'ORCH indique, et donnez-lui son premier prompt
-   (bouton « Copier et marquer envoyé » du tableau), ou laissez l'ORCH l'envoyer directement.
+1. Install the kit (see `README.md`), then open Claude Code at the project root.
+2. Type `/orch-init <Project name>`. The ORCH reads the project and proposes:
+   - the sessions (for example A foundations, B backend, D design, E integration, H deployment);
+   - the environments (dev, preview, production);
+   - the **delegation matrix**: what the ORCH does alone, what it asks you first, what only you do.
+3. Approve or adjust. The ORCH creates the tracker (a claude.ai page) and gives you its link.
+4. Open one Claude Code session per letter, in the folder the ORCH gives you, and give it its first prompt
+   (the tracker's "Copy and mark sent" button), or let the ORCH send it directly.
 
-## 3. Au quotidien
+## 3. Day to day
 
-- **Le tableau, vue « Prompts »** : chaque carte est un travail confié à une session. Statuts : à envoyer → envoyé
-  → retour reçu → traité.
-- **Le tableau, vue « À exécuter »** : vos actions, numérotées (#n), dans l'ordre, avec le résultat attendu. Une
-  action faite : bouton « Exécuté » et collez le résultat ; l'ORCH le lit là.
-- **Les retours** : une session termine par un bloc « RETOUR SESSION X : P-xxx ». Si l'ORCH communique directement
-  avec les sessions, il le reçoit lui-même ; sinon, collez-le dans la session ORCH.
-- **Les décisions** : l'ORCH vous les pose une par une, avec le contexte, les options, sa recommandation et son
-  coût. Répondez simplement (« OK », « option B », « non, parce que… »).
-- **Le point d'état** : `/orch-status` dans la session ORCH.
+- **The tracker, "Prompts" view**: each card is a piece of work given to a session. Statuses: to send → sent
+  → returned → done.
+- **The tracker, "To execute" view**: your actions, numbered (#n), in order, with the expected result. When an
+  action is done: click "Done" and paste the result; the ORCH reads it there.
+- **Returns**: a session ends with a "RETURN SESSION X: P-xxx" block. If the ORCH talks to the sessions directly,
+  it receives the block itself; otherwise, paste it into the ORCH session.
+- **Decisions**: the ORCH asks them one at a time, with the context, the options, its recommendation and its
+  cost. Answer simply ("OK", "option B", "no, because…").
+- **Status check**: `/orch-status` in the ORCH session.
 
-## 4. Ce qui vous revient toujours
+## 4. What always stays with you
 
-- Saisir ou créer une clé, un jeton, un mot de passe : dans une invite masquée, jamais dans le chat. Les clés vont
-  dans les variables d'environnement de votre session Windows (ou de votre shell) ; les scripts les lisent sans
-  les afficher.
-- Créer des comptes, accepter des conditions, payer.
-- Donner le GO de la production.
-- Valider les textes publics (landing, pages légales, e-mails), avec un juriste quand c'est nécessaire.
+- Entering or creating a key, a token, a password: in a masked prompt, never in the chat. Keys go into the
+  environment variables of your Windows session (or your shell); scripts read them without displaying them.
+- Creating accounts, accepting terms, paying.
+- Giving the GO for production.
+- Approving public texts (landing page, legal pages, emails), with a lawyer when needed.
 
-## 5. Matrice de délégation type
+## 5. Typical delegation matrix
 
-| L'ORCH fait seul, puis rend compte | L'ORCH vous demande d'abord | Vous seul |
+| The ORCH does it alone, then reports | The ORCH asks you first | Only you |
 |---|---|---|
-| Tests, contrôles, mesures | Production | Secrets |
-| Déploiement d'une préversion non indexée | Dépenses | Création de comptes |
-| Scripts sur l'environnement de dev | Nouveaux textes publics | Consoles inaccessibles à l'ORCH |
-| Envoi des prompts et réception des retours | Suppressions irréversibles, dérogations | Actions physiques |
+| Tests, checks, measurements | Production | Secrets |
+| Deploying a non-indexed preview | Spending | Creating accounts |
+| Scripts on the dev environment | New public texts | Consoles the ORCH cannot reach |
+| Sending prompts and receiving returns | Irreversible deletions, exceptions to rules | Physical actions |
 
-## 6. Conseils tirés de la pratique
+## 6. Tips from practice
 
-- **Une session = un domaine = un dossier git.** Les conflits viennent des fichiers partagés : l'ORCH séquence
-  les sessions qui touchent les mêmes fichiers.
-- **Fermez les sessions terminées.** Plusieurs sessions et leurs tests saturent la mémoire d'un poste.
-- **Exigez des preuves.** Un retour sans validations ou avec un « partiel » est normal ; l'ORCH vérifie et écrit
-  une suite (`P-xxx-C2`) si besoin.
-- **Design** : si les écrans « font générés par IA », demandez une critique des captures et l'exploration de deux
-  directions sur deux écrans pilotes avant de tout reprendre.
-- **Skills tiers** : n'installez qu'après relecture de leurs fichiers (l'ORCH peut le faire pour vous) ; refusez
-  ceux qui exécutent du code sans raison.
+- **One session = one domain = one git folder.** Conflicts come from shared files: the ORCH sequences the
+  sessions that touch the same files.
+- **Close finished sessions.** Several sessions and their tests use up a machine's memory.
+- **Ask for evidence.** A return without validations, or marked "partial", is normal; the ORCH checks it and
+  writes a follow-up (`P-xxx-C2`) if needed.
+- **Design**: if the screens "look AI-generated", ask for a critique of the screenshots and for two directions
+  explored on two pilot screens before reworking everything.
+- **Third-party skills**: install them only after reading their files (the ORCH can do it for you); refuse those
+  that run code for no reason.

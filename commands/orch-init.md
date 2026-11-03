@@ -1,28 +1,28 @@
 ---
-description: Initialiser (ou adopter sur un projet existant) la méthode ORCH/PO multi-sessions avec tableau de suivi
-argument-hint: "[nom du projet]"
+description: Set up (or adopt on an existing project) the multi-session ORCH/PO method with a tracker
+argument-hint: "[project name]"
 ---
 
-Tu deviens l'ORCH de ce projet, avec le skill `orchestration-multi-sessions`. Charge-le et suis-le. Projet : $ARGUMENTS
-(sinon, déduis le nom du dépôt et confirme-le).
+You become the ORCH of this project, with the `orchestration-multi-sessions` skill. Load it and follow it.
+Project: $ARGUMENTS (otherwise, infer the name from the repository and confirm it).
 
-1. **État des lieux** (lecture seule) : CLAUDE.md, PRD ou README, ADR, branches, worktrees existants, CI,
-   environnements (bases, hébergement), commandes de validation, sessions Claude déjà ouvertes (`ListAgents`).
-2. **Proposition au PO**, en une seule fois et de façon concise :
-   - le découpage en sessions (lettre, domaine, périmètre interdit) adapté à ce projet ;
-   - les environnements et l'ordre de promotion ;
-   - la matrice de délégation par défaut du skill (section 3.4), à valider ou ajuster ;
-   - qui écrit les migrations.
-3. Après accord :
-   - ajouter au CLAUDE.md la section de `templates/CLAUDE-orchestration.md`, remplie (si un garde-fou bloque
-     l'écriture du CLAUDE.md, donner le texte au PO pour qu'il l'enregistre) ;
-   - créer le tableau : publier `tracker/index.html` du skill comme nouvel artifact « Suivi <Projet> »
-     (capacités `db` et `user`), écrire `config/projet`, ajouter l'URL au CLAUDE.md ; sans artifact possible,
-     créer `docs/pilotage/BACKLOG.md` depuis `templates/BACKLOG.md` ;
-   - créer la mémoire de l'ORCH depuis `templates/MEMORY.md` ;
-   - écrire les premiers prompts (structure `templates/PROMPT.md`) et les étapes du PO (ouverture des worktrees
-     et des sessions).
-4. Dire au PO, en quelques lignes : ce qui est en place, l'URL du tableau, ses premières actions.
+1. **Inventory** (read only): CLAUDE.md, PRD or README, ADRs, branches, existing worktrees, CI,
+   environments (databases, hosting), validation commands, Claude sessions already open (`ListAgents`).
+2. **Proposal to the PO**, all at once and concisely:
+   - the split into sessions (letter, domain, forbidden scope) suited to this project;
+   - the environments and the promotion order;
+   - the skill's default delegation matrix (section 3.4), to approve or adjust;
+   - who writes the migrations.
+3. After approval:
+   - add the section from `templates/CLAUDE-orchestration.md`, filled in, to the CLAUDE.md (if a safeguard blocks
+     writing the CLAUDE.md, give the text to the PO so they save it);
+   - create the tracker: publish the skill's `tracker/index.en.html` (or `tracker/index.html` in French) as a
+     new artifact "Tracker <Project>" (`db` and `user` capabilities), write `config/projet`, add the URL to the
+     CLAUDE.md; if no artifact is possible, create `docs/pilotage/BACKLOG.md` from `templates/BACKLOG.md`;
+   - create the ORCH memory from `templates/MEMORY.md`;
+   - write the first prompts (structure `templates/PROMPT.md`) and the PO steps (opening the worktrees
+     and the sessions).
+4. Tell the PO, in a few lines: what is in place, the tracker URL, their first actions.
 
-Sur un projet déjà orchestré : comparer sa section « Orchestration » au modèle actuel et proposer seulement les
-ajouts (délégation, communication directe, contrôles de mémoire, qualité du design).
+On a project already orchestrated: compare its "Orchestration" section with the current template and propose only
+the additions (delegation, direct communication, memory checks, design quality).

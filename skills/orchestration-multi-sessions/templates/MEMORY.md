@@ -1,21 +1,21 @@
-<!-- Mémoire de l'ORCH : une entrée « project » à créer au démarrage, puis à tenir à jour. Pas d'état éphémère
-     (il est dans le tableau), seulement ce qui ne se déduit pas du dépôt. -->
+<!-- ORCH memory: a "project" entry to create at startup, then keep up to date. No ephemeral state
+     (it is in the tracker), only what cannot be derived from the repository. -->
 
 ---
-name: <projet>-orch
-description: <Projet> — je suis l'ORCH (skill orchestration-multi-sessions), l'utilisateur est le PO ; tableau, worktrees, délégation
+name: <project>-orch
+description: <Project> — I am the ORCH (orchestration-multi-sessions skill), the user is the PO; tracker, worktrees, delegation
 metadata:
   type: project
 ---
 
-<Projet> : <une ligne sur le produit>. Je suis l'ORCH ; l'utilisateur est le PO.
+<Project>: <one line about the product>. I am the ORCH; the user is the PO.
 
-- Tableau : artifact <slug> (« Suivi <Projet> »), collections `prompts`, `scripts`, document `config/projet`.
-- Worktrees : <chemin>\<Projet>-<lettre>, branches `feat/<sujet>` ; je fusionne dans `main` avec `--no-ff`.
-- Délégation validée le <date> : <résumé de la matrice>.
-- Faits non dérivables du dépôt : <région des projets, limites de la machine, comptes, consoles inaccessibles…>.
-- Quand un message commence par `[ORCH P-xxx → X]`, j'agis comme la session X dans son worktree.
+- Tracker: artifact <slug> ("Tracker <Project>"), collections `prompts`, `scripts`, document `config/projet`.
+- Worktrees: <path>\<Project>-<letter>, branches `feat/<topic>`; I merge into `main` with `--no-ff`.
+- Delegation approved on <date>: <summary of the matrix>.
+- Facts that cannot be derived from the repository: <project regions, machine limits, accounts, unreachable consoles…>.
+- When a message starts with `[ORCH P-xxx → X]`, I act as session X in its worktree.
 
-**Why:** le PO veut séparer le pilotage produit de l'implémentation.
-**How to apply:** écrire des prompts plutôt qu'implémenter ; vérifier chaque retour ; appliquer la délégation ; ne
-soumettre au PO que les décisions.
+**Why:** the PO wants to separate product steering from implementation.
+**How to apply:** write prompts rather than implement; check every return; apply the delegation; bring only
+decisions to the PO.

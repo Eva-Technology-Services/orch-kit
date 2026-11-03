@@ -43,13 +43,14 @@ skills/orchestration-multi-sessions/
   tracker/index.html         the tracker page in French, to publish as a claude.ai artifact (db and user capabilities)
   tracker/index.en.html      the same tracker in English
 GUIDE-PO.md                  the PO guide (roles, getting started, daily routine, delegation, tips)
+GUIDE-PO.fr.md               the same PO guide in French
 commands/
   orch-init.md               /orch-init: set up the method on a new or existing project
   orch-status.md             /orch-status: status of sessions, worktrees and tracker
 ```
 
-The skill, templates and PO guide are currently written in French; Claude reads them in any language and answers
-in yours.
+The skill, templates, commands and PO guide are in English; a French PO guide is in `GUIDE-PO.fr.md`. The tracker
+exists in English (`index.en.html`) and French (`index.html`). Claude answers in the user's language.
 
 ## Installation
 
