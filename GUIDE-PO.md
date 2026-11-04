@@ -9,8 +9,8 @@ The detailed method, for Claude, is in `skills/orchestration-multi-sessions/SKIL
 
 | Who | Does | Does not |
 |---|---|---|
-| **You (PO)** | Decide: scope, priorities, public texts, money, production. Keep the secrets and accounts. | Copy and paste mechanically (the ORCH does it if you delegate it). |
-| **ORCH** (a Claude Code session at the project root) | Splits the work into prompts, writes everything in the tracker, checks every return, merges, sums up the decisions for you. | Implement features, or decide for you on anything sensitive. |
+| **You (PO)** | Open and close the sessions. Run the backend scripts (unless you delegate the dev ones). Decide: scope, priorities, public texts, money, production. Keep the secrets and accounts. | Copy and paste mechanically (the ORCH does it if you delegate it). |
+| **ORCH** (a Claude Code session at the project root) | Keeps the sessions in sync and controls the governance: splits the work into prompts, writes everything in the tracker, checks every return, merges, sums up the decisions for you. | Open or close sessions, implement features, or decide for you on anything sensitive. |
 | **Specialized sessions** (one per domain, each in its own git folder) | Implement their prompt, test, hand back a structured return. | Merge, or step outside their scope. |
 
 ## 2. Getting started (30 minutes)
@@ -34,6 +34,10 @@ The detailed method, for Claude, is in `skills/orchestration-multi-sessions/SKIL
   it receives the block itself; otherwise, paste it into the ORCH session.
 - **Decisions**: the ORCH asks them one at a time, with the context, the options, its recommendation and its
   cost. Answer simply ("OK", "option B", "no, because…").
+- **The tracker, "In progress" view**: what is running (session, card, for how long), what is waiting for you
+  (in order), what comes next, and a dated log. The ORCH updates it at every prompt sent, return, merge,
+  deployment or decision.
+- **A session is missing?** The ORCH asks you to open it (folder and branch): sessions are yours to open and close.
 - **Status check**: `/orch-status` in the ORCH session.
 
 ## 4. What always stays with you
@@ -50,8 +54,9 @@ The detailed method, for Claude, is in `skills/orchestration-multi-sessions/SKIL
 |---|---|---|
 | Tests, checks, measurements | Production | Secrets |
 | Deploying a non-indexed preview | Spending | Creating accounts |
-| Scripts on the dev environment | New public texts | Consoles the ORCH cannot reach |
+| Scripts on the dev environment, if you delegate them | New public texts | Consoles the ORCH cannot reach |
 | Sending prompts and receiving returns | Irreversible deletions, exceptions to rules | Physical actions |
+| Keeping the "In progress" view current | | Opening and closing sessions; backend scripts not delegated |
 
 ## 6. Risk zones: when a task drifts
 

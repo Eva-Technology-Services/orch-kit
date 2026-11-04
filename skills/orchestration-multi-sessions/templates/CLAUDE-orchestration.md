@@ -4,8 +4,10 @@
 
 This project uses the `orchestration-multi-sessions` skill.
 
-- ORCH: coordination session (splits the work into prompts, reads the returns, merges, keeps the tracker).
-  PO: <name or role>, who makes the decisions.
+- ORCH: coordination session; keeps the sessions in sync and controls the governance (prompts, checks of the
+  returns, merges, risk zones, tracker and its "In progress" view). It never opens or closes a session.
+  PO: <name or role>, who opens and closes the sessions, runs the backend scripts that are not delegated and
+  approves every sensitive operation.
 - Tracker: <artifact URL> ("Tracker <Project>").
 
 | Session | Domain | Forbidden without a prompt |
@@ -31,9 +33,10 @@ This project uses the `orchestration-multi-sessions` skill.
 - Validations: <format, lint, typecheck, tests, build, e2e, size check…>.
 - Return format: the skill's `templates/RETURN.md` ("RETURN SESSION X: P-xxx" block).
 - Delegation to the ORCH (approved by the PO on <date>):
-  - the ORCH does it alone, then reports: tests and checks, deploying the non-indexed preview, scripts prepared
-    by a session on the dev environment, sending ordinary prompts to the sessions and receiving their returns by
-    direct message (the tracker remains the record);
+  - the ORCH does it alone, then reports: tests and checks, deploying the non-indexed preview, sending ordinary
+    prompts to the sessions and receiving their returns by direct message (the tracker remains the record),
+    keeping the tracker's "In progress" view current; <add "scripts prepared by a session on the dev environment"
+    only if the PO delegates them; otherwise the PO runs every backend script>;
   - the ORCH asks first: production, spending, new public text, irreversible deletion, exception to a rule;
-  - the PO only: entering or creating secrets, creating accounts, consoles the ORCH cannot reach, physical
-    actions. Secrets stay in the user's environment variables and are never displayed.
+  - the PO only: opening and closing the sessions, entering or creating secrets, creating accounts, consoles the
+    ORCH cannot reach, physical actions. Secrets stay in the user's environment variables and are never displayed.

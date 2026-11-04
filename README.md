@@ -11,10 +11,12 @@ keeps the decisions.
   and only brings decisions to the PO.
 - **Specialized sessions** (A foundations, B backend, D design, E integration, H deployment…): each one works in
   its own git worktree and branch, inside its own scope. They answer in a common return format and never merge.
-- **PO**: decides on production, money, public texts and anything irreversible, and keeps the secrets and accounts.
+- **PO**: opens and closes the sessions, runs the backend scripts (unless the dev ones are delegated), decides on
+  production, money, public texts and anything irreversible, and keeps the secrets and accounts.
   A **delegation matrix** written in the project's CLAUDE.md defines what the ORCH may do on its own.
-- **Tracker**: a claude.ai artifact with two views: "Prompts" (to send → sent → returned → done) and "To execute"
-  (the PO's numbered steps, each with its expected result).
+- **Tracker**: a claude.ai artifact with three views: "Prompts" (to send → sent → returned → done), "To execute"
+  (the PO's numbered steps, each with its expected result) and "In progress" (what is running, what is waiting for
+  the PO, what comes next, and a dated log).
 - **Direct communication**: on the same machine, the ORCH reaches the other sessions (`ListAgents`, `SendMessage`),
   sends ordinary prompts and receives returns without any copy-paste.
 

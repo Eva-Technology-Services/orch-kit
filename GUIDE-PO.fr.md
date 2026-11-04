@@ -9,8 +9,8 @@ La méthode détaillée, pour Claude, est dans `skills/orchestration-multi-sessi
 
 | Qui | Fait | Ne fait pas |
 |---|---|---|
-| **Vous (PO)** | Décidez : périmètre, priorités, textes publics, argent, production. Gardez les secrets et les comptes. | Copier-coller mécaniquement (l'ORCH s'en charge si vous le déléguez). |
-| **ORCH** (une session Claude Code à la racine du projet) | Découpe en prompts, écrit tout dans le tableau, vérifie chaque retour, fusionne, vous résume les décisions. | Implémenter les fonctionnalités, décider à votre place sur ce qui est sensible. |
+| **Vous (PO)** | Ouvrez et fermez les sessions. Exécutez les scripts backend (sauf ceux de dev si vous les déléguez). Décidez : périmètre, priorités, textes publics, argent, production. Gardez les secrets et les comptes. | Copier-coller mécaniquement (l'ORCH s'en charge si vous le déléguez). |
+| **ORCH** (une session Claude Code à la racine du projet) | Synchronise les sessions et contrôle la gouvernance : découpe en prompts, écrit tout dans le tableau, vérifie chaque retour, fusionne, vous résume les décisions. | Ouvrir ou fermer des sessions, implémenter les fonctionnalités, décider à votre place sur ce qui est sensible. |
 | **Sessions spécialisées** (une par domaine, chacune dans son dossier git) | Implémentent leur prompt, testent, rendent un retour structuré. | Fusionner, sortir de leur périmètre. |
 
 ## 2. Mise en route (30 minutes)
@@ -34,6 +34,11 @@ La méthode détaillée, pour Claude, est dans `skills/orchestration-multi-sessi
   avec les sessions, il le reçoit lui-même ; sinon, collez-le dans la session ORCH.
 - **Les décisions** : l'ORCH vous les pose une par une, avec le contexte, les options, sa recommandation et son
   coût. Répondez simplement (« OK », « option B », « non, parce que… »).
+- **Le tableau, vue « En cours »** : ce qui tourne (session, carte, depuis combien de temps), ce qui vous attend
+  (dans l'ordre), ce qui part ensuite, et un journal daté. L'ORCH la met à jour à chaque envoi de prompt, retour,
+  fusion, déploiement ou décision.
+- **Une session manque ?** L'ORCH vous demande de l'ouvrir (dossier et branche) : c'est vous qui ouvrez et fermez
+  les sessions.
 - **Le point d'état** : `/orch-status` dans la session ORCH.
 
 ## 4. Ce qui vous revient toujours
@@ -51,8 +56,9 @@ La méthode détaillée, pour Claude, est dans `skills/orchestration-multi-sessi
 |---|---|---|
 | Tests, contrôles, mesures | Production | Secrets |
 | Déploiement d'une préversion non indexée | Dépenses | Création de comptes |
-| Scripts sur l'environnement de dev | Nouveaux textes publics | Consoles inaccessibles à l'ORCH |
+| Scripts sur l'environnement de dev, si vous les déléguez | Nouveaux textes publics | Consoles inaccessibles à l'ORCH |
 | Envoi des prompts et réception des retours | Suppressions irréversibles, dérogations | Actions physiques |
+| Mise à jour de la vue « En cours » | | Ouverture et fermeture des sessions ; scripts backend non délégués |
 
 ## 6. Zones à risque : quand une tâche dérive
 

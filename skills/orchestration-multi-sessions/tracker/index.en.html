@@ -96,10 +96,32 @@ button:focus-visible,.sess:focus-visible,.tab:focus-visible,textarea:focus-visib
 .empty{color:var(--muted);text-align:center;padding:40px 12px;border:1px dashed var(--line);border-radius:12px}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20}
 .legend{color:var(--muted);font-size:12.5px;margin-top:18px;line-height:1.6}
+/* "In progress": what the ORCH is doing now (running, waiting on the PO, next) and the event log. */
+.dash{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:14px}
+.dash h3{font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0}
+.dash ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.dash li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:14px;min-width:0}
+.dash li .txt{flex:1 1 12em;min-width:0;overflow-wrap:anywhere}
+.since{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.none{color:var(--muted);font-size:13.5px}
+.jt{margin-top:22px}
+.feed{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column}
+.feed li{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.feed time{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.feed .txt{min-width:0;overflow-wrap:anywhere}
+.ev{font-family:var(--mono);font-size:11.5px;font-weight:500;border-radius:6px;padding:1px 7px;white-space:nowrap}
+.ev-lance{color:var(--st-sent);background:var(--st-sent-bg)}
+.ev-retour{color:var(--st-back);background:var(--st-back-bg)}
+.ev-fusion,.ev-po{color:var(--st-done);background:var(--st-done-bg)}
+.ev-deploiement{color:var(--st-send);background:var(--st-send-bg)}
+.ev-decision{color:var(--fg);background:var(--bg);border:1px solid var(--line)}
+.ev-blocage{color:var(--gl-block);background:var(--gl-block-bg)}
+@media (min-width:760px){.dash{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (min-width:1100px){
-  .views{display:none}
+  aside .views{display:none}
   .layout{grid-template-columns:minmax(0,1fr) minmax(0,460px)}
-  .col[hidden]{display:block!important}
+  .layout:not([data-view="activity"]) > #colPrompts[hidden],.layout:not([data-view="activity"]) > #colScripts[hidden]{display:block!important}
+  #colActivity{grid-column:1/-1}
   aside.col{position:sticky;top:env(safe-area-inset-top,0px);max-height:calc(100vh - env(safe-area-inset-top,0px));overflow:auto;padding-bottom:24px}
   aside header.ph{margin:0;padding-left:14px;padding-right:14px;border-left:1px solid var(--line)}
 }
@@ -113,6 +135,7 @@ button:focus-visible,.sess:focus-visible,.tab:focus-visible,textarea:focus-visib
         <div class="views" role="tablist" aria-label="View">
           <button class="view" role="tab" id="vP" aria-selected="true">Prompts<span class="n" id="vPn"></span></button>
           <button class="view" role="tab" id="vS" aria-selected="false">To execute<span class="n" id="vSn"></span></button>
+          <button class="view" role="tab" id="vA" aria-selected="false">In progress<span class="n" id="vAn"></span></button>
         </div>
         <h1 id="ptitle">ORCH prompt tracker</h1>
         <p class="sub" id="sub">Each prompt has a P-xxx number. Copying a prompt marks it “Sent”.</p>
@@ -130,6 +153,7 @@ button:focus-visible,.sess:focus-visible,.tab:focus-visible,textarea:focus-visib
         <div class="views" role="tablist" aria-label="View">
           <button class="view" role="tab" id="vP2" aria-selected="false">Prompts<span class="n" id="vPn2"></span></button>
           <button class="view" role="tab" id="vS2" aria-selected="true">To execute<span class="n" id="vSn2"></span></button>
+          <button class="view" role="tab" id="vA2" aria-selected="false">In progress<span class="n" id="vAn2"></span></button>
         </div>
         <h2>To execute by the PO</h2>
         <p class="sub">In the order shown. SQL: in the SQL editor of the project shown (check the reference). PowerShell: in the folder shown. Manual: the action described.</p>
@@ -140,6 +164,21 @@ button:focus-visible,.sess:focus-visible,.tab:focus-visible,textarea:focus-visib
       </div>
       <p class="legend">Flow: <b>To execute</b> → “Copy” → paste into the SQL editor or PowerShell (or do the manual action) → <b>Done</b> (paste the output) or <b>Failed</b> (paste the error) → the ORCH reads the result here.</p>
     </aside>
+
+    <section class="col" id="colActivity" hidden>
+      <header class="ph">
+        <div class="views" role="tablist" aria-label="View">
+          <button class="view" role="tab" id="vP3" aria-selected="false">Prompts<span class="n" id="vPn3"></span></button>
+          <button class="view" role="tab" id="vS3" aria-selected="false">To execute<span class="n" id="vSn3"></span></button>
+          <button class="view" role="tab" id="vA3" aria-selected="true">In progress<span class="n" id="vAn3"></span></button>
+        </div>
+        <h2>In progress</h2>
+        <p class="sub" id="asub">What the ORCH is doing now. The PO opens the sessions; the ORCH sends them the prompts. Updated at every send, return, merge, deployment or decision.</p>
+      </header>
+      <div class="dash" id="dash" aria-live="polite"><div class="empty">Loading…</div></div>
+      <h2 class="jt">Log</h2>
+      <ol class="feed" id="feed"></ol>
+    </section>
   </div>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -163,7 +202,7 @@ const STABS = [
   {id:"done", label:"Done", match:s=>s==="execute"},
   {id:"all", label:"All", match:()=>true}
 ];
-const ENVS = {sandbox:"env-sandbox", preprod:"env-preprod", prod:"env-prod"};
+const ENVS = {sandbox:"env-sandbox", dev:"env-sandbox", preprod:"env-preprod", preview:"env-preprod", prod:"env-prod"};
 const TYPES = {sql:{label:"SQL",copy:"Copy SQL",where:"the SQL editor"}, powershell:{label:"PowerShell",copy:"Copy commands",where:"PowerShell"}, manuel:{label:"Manual",copy:"",where:""}};
 function typeOf(r){return TYPES[r.type]?r.type:"sql"}
 function codeOf(r){return r.code||r.sql||""}
@@ -173,33 +212,79 @@ let SESSIONS = [];
 let projet = null;
 function sessionsList(){if(projet&&Array.isArray(projet.sessions)&&projet.sessions.length)return projet.sessions;const s=[...new Set(rows.map(r=>r.session).filter(Boolean))].sort();return s}
 let rows = [], scripts = [], tab = "todo", stab = "todo", sess = null, db = null, canWrite = true, view = "prompts", asking = null;
+let etat = null, journal = [];
 
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 const savedTab = safeGet("orch-tab"); if (savedTab && TABS.some(t=>t.id===savedTab)) tab = savedTab;
 const savedSTab = safeGet("orch-stab"); if (savedSTab && STABS.some(t=>t.id===savedSTab)) stab = savedSTab;
-const savedView = safeGet("orch-view"); if (savedView==="scripts") view = "scripts";
+const savedView = safeGet("orch-view"); if (savedView==="scripts"||savedView==="activity") view = savedView;
 
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>{t.hidden=true},2400)}
 function fmt(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return"";return d.toLocaleString("en-US",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
 function el(tag,attrs={},kids=[]){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="class")e.className=v;else if(k==="text")e.textContent=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v)}for(const c of[].concat(kids))if(c!=null&&c!==false)e.append(c);return e}
 
 function setView(v){view=v;safeSet("orch-view",v);applyView()}
+const VP=["vP","vP2","vP3"], VS=["vS","vS2","vS3"], VA=["vA","vA2","vA3"];
 function applyView(){
   document.getElementById("colPrompts").hidden = view!=="prompts";
   document.getElementById("colScripts").hidden = view!=="scripts";
-  for(const id of ["vP","vP2"])document.getElementById(id).setAttribute("aria-selected",String(view==="prompts"));
-  for(const id of ["vS","vS2"])document.getElementById(id).setAttribute("aria-selected",String(view==="scripts"));
+  document.getElementById("colActivity").hidden = view!=="activity";
+  document.querySelector(".layout").dataset.view = view;
+  for(const id of VP)document.getElementById(id).setAttribute("aria-selected",String(view==="prompts"));
+  for(const id of VS)document.getElementById(id).setAttribute("aria-selected",String(view==="scripts"));
+  for(const id of VA)document.getElementById(id).setAttribute("aria-selected",String(view==="activity"));
 }
-for(const id of ["vP","vP2"])document.getElementById(id).addEventListener("click",()=>setView("prompts"));
-for(const id of ["vS","vS2"])document.getElementById(id).addEventListener("click",()=>setView("scripts"));
+for(const id of VP)document.getElementById(id).addEventListener("click",()=>setView("prompts"));
+for(const id of VS)document.getElementById(id).addEventListener("click",()=>setView("scripts"));
+for(const id of VA)document.getElementById(id).addEventListener("click",()=>setView("activity"));
 
 function counts(){
   const p=rows.filter(r=>r.statut==="a_envoyer"||r.statut==="retour").length;
   const s=scripts.filter(r=>r.statut==="a_executer"||r.statut==="echec").length;
-  for(const id of ["vPn","vPn2"])document.getElementById(id).textContent=p?String(p):"";
-  for(const id of ["vSn","vSn2"])document.getElementById(id).textContent=s?String(s):"";
+  const a=etat&&Array.isArray(etat.tourne)?etat.tourne.length:0;
+  for(const id of ["vPn","vPn2","vPn3"])document.getElementById(id).textContent=p?String(p):"";
+  for(const id of ["vSn","vSn2","vSn3"])document.getElementById(id).textContent=s?String(s):"";
+  for(const id of ["vAn","vAn2","vAn3"])document.getElementById(id).textContent=a?String(a):"";
 }
+
+/* ───── In progress ───── */
+const EVENTS = {lance:"Prompt sent", retour:"Return", fusion:"Merged", deploiement:"Deployed", decision:"Decision", po:"PO", blocage:"Blocked"};
+function since(iso){
+  const d=new Date(iso);if(!iso||isNaN(d))return"";
+  const m=Math.max(0,Math.round((Date.now()-d)/60000));
+  if(m<60)return"for "+m+" min";
+  const h=Math.floor(m/60);if(h<24)return"for "+h+" h "+String(m%60).padStart(2,"0");
+  return"for "+Math.floor(h/24)+" d";
+}
+function block(title,items,row,emptyText){
+  const ul=el("ul");
+  for(const it of items)ul.append(row(it));
+  return el("section",{class:"card"},[el("h3",{text:title+(items.length?" ("+items.length+")":"")}),items.length?ul:el("p",{class:"none",text:emptyText})]);
+}
+function renderActivity(){
+  counts();
+  const dash=document.getElementById("dash");dash.replaceChildren();
+  const sub=document.getElementById("asub");
+  if(!etat){dash.append(el("div",{class:"empty",text:"The ORCH has not published anything here yet. It will show what is running, what is waiting for you and what comes next."}))}
+  else{
+    if(etat.updated_at)sub.textContent="Updated "+fmt(etat.updated_at)+" by the ORCH, at every prompt sent, return, merge, deployment or decision. The PO opens the sessions.";
+    dash.append(
+      block("Running",etat.tourne||[],t=>el("li",{},[el("span",{class:"who",text:t.session||"ORCH"}),t.carte?el("span",{class:"pid",text:t.carte}):null,el("span",{class:"txt",text:t.objet||""}),el("span",{class:"since",text:since(t.depuis)})]),"Nothing is running right now."),
+      block("Waiting for you",etat.attend||[],t=>el("li",{},[el("span",{class:"pid",text:t.ref||""}),el("span",{class:"txt",text:t.titre||""}),t.quand?el("span",{class:"since",text:t.quand}):null]),"Nothing is waiting for you."),
+      block("Next",etat.ensuite||[],t=>el("li",{},[t.apres?el("span",{class:"who",text:"after "+t.apres}):null,el("span",{class:"txt",text:t.texte||String(t)})]),"Nothing planned yet.")
+    );
+  }
+  const feed=document.getElementById("feed");feed.replaceChildren();
+  const shown=[...journal].sort((a,b)=>String(b.at||"").localeCompare(String(a.at||""))).slice(0,40);
+  if(!shown.length){feed.append(el("li",{},[el("span",{class:"none",text:"The log is empty."})]));return}
+  for(const j of shown){
+    const label=EVENTS[j.type]||j.type||"";
+    const who=[j.session,j.carte].filter(Boolean).join(" ");
+    feed.append(el("li",{},[el("time",{datetime:j.at||"",text:fmt(j.at)}),el("span",{class:"ev ev-"+(EVENTS[j.type]?j.type:"decision"),text:label}),el("span",{class:"txt",text:(who?who+" · ":"")+(j.texte||"")})]));
+  }
+}
+setInterval(()=>{if(view==="activity")renderActivity()},60000);
 
 /* ───── Prompts ───── */
 function renderHeader(){
@@ -347,7 +432,7 @@ function renderScripts(){
 }
 
 (async()=>{
-  applyView();render();renderScripts();
+  applyView();render();renderScripts();renderActivity();
   db = window.claude ? await window.claude.use("db") : null;
   if(!db){document.getElementById("sub").textContent="Database unavailable in this view. Open the page signed in to claude.ai.";render();renderScripts();return}
   try{const user=await window.claude.use("user");const c=user?await user.can("data.write"):null;if(c===false)canWrite=false}catch(e){}
@@ -355,6 +440,8 @@ function renderScripts(){
   db.collection("config").onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==="projet");projet=d?d.data():null;if(projet&&projet.nom){document.getElementById("ptitle").textContent="Prompt tracker — "+projet.nom;document.title="Tracker "+projet.nom}render()},()=>{});
   db.collection("prompts").onSnapshot(snap=>{rows=snap.docs.map(d=>({_id:d.id,...d.data()}));render()},lost);
   db.collection("scripts").onSnapshot(snap=>{scripts=snap.docs.map(d=>({_id:d.id,...d.data()}));if(!asking)renderScripts();else counts()},lost);
+  db.collection("etat").onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==="courant");etat=d?d.data():null;renderActivity()},()=>{});
+  db.collection("journal").onSnapshot(snap=>{journal=snap.docs.map(d=>({_id:d.id,...d.data()}));renderActivity()},()=>{});
 })();
 </script>
 

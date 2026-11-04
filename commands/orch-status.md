@@ -8,9 +8,10 @@ You are the ORCH (`orchestration-multi-sessions` skill). Take stock, read only:
    send each one the skill's short question (section 6) and wait for their answers.
 2. For each worktree of the project: branch, commits ahead of the source of truth, modified files, last
    commit and its age.
-3. Tracker: cards `envoye` and `retour`, PO steps `a_executer` or `echec`.
+3. Tracker: cards `envoye` and `retour`, PO steps `a_executer` or `echec`; then bring the "In progress" view
+   (`etat/courant`, `journal`) up to date with what you found.
 4. Free memory on the machine and heavy runs in progress (e2e, builds).
 
 Give a short table (session, card, state, next action), then the list of actions: those you do
-yourself under the delegation, the PO's in order, and the decisions awaited. Suggest closing the
-finished sessions.
+yourself under the delegation, the PO's in order, and the decisions awaited. Suggest that the PO
+closes the finished sessions (the PO opens and closes them, never the ORCH).
