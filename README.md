@@ -1,8 +1,11 @@
-# orch-kit: run a project with several Claude Code sessions
+# orch-kit: run a project with several Claude Code or Codex sessions
 
 A method proven on a real project (a web app with a backend, AI receipt scanning, a landing page and deployment)
-to have **several Claude Code sessions work in parallel**, coordinated by an **ORCH** session, while a human **PO**
-keeps the decisions.
+to have **several AI coding sessions work in parallel** (Claude Code, Codex, or a mix of both), coordinated by an
+**ORCH** session, while a human **PO** keeps the decisions.
+
+**Start here:** [START-PROMPTS.md](START-PROMPTS.md) ([français](START-PROMPTS.fr.md)) gives the prompt to paste into
+an ORCH session on Claude Code or on Codex, and into each specialized session.
 
 ## How it works
 
@@ -42,9 +45,10 @@ and the result pasted back, including failures.
 skills/orchestration-multi-sessions/
   SKILL.md                   the method (roles, checks, delegation, tracker, communication, design)
   templates/                 CLAUDE-orchestration.md, PROMPT.md, RETURN.md, MEMORY.md, BACKLOG.md
-  templates/hooks/           optional guard: risk zones, PreToolUse hook, settings snippet
+  templates/hooks/           optional guard: risk zones, PreToolUse hook, Claude Code settings and Codex hooks.json
   tracker/index.html         the tracker page in French, to publish as a claude.ai artifact (db and user capabilities)
   tracker/index.en.html      the same tracker in English
+START-PROMPTS.md             prompts to start an ORCH or a session on Claude Code or Codex (French: START-PROMPTS.fr.md)
 GUIDE-PO.md                  the PO guide (roles, getting started, daily routine, delegation, tips)
 GUIDE-PO.fr.md               the same PO guide in French
 commands/
@@ -71,12 +75,17 @@ claude plugin marketplace add C:\path\to\orch-kit
 claude plugin install orch-kit@orch-kit --scope user
 ```
 
+On **Codex**, copy the skill folder into the project (`.agents/skills/`) or your user folder (`~/.agents/skills/`):
+see [START-PROMPTS.md](START-PROMPTS.md#install-on-codex). Codex has no claude.ai tracker and no direct messages
+between sessions: the ORCH keeps `docs/pilotage/BACKLOG.md` and the PO carries the prompts.
+
 Installing the plugin runs nothing: it contains text, one HTML page and an **optional** guard script. That script
 runs only in a project where `/orch-init` installs it, after you approve it (see "Catching drift" below).
 
 ## Getting started
 
-1. Open Claude Code at the root of your project and type `/orch-init <Project name>`.
+1. Open Claude Code at the root of your project and type `/orch-init <Project name>`, or paste the ORCH prompt of
+   [START-PROMPTS.md](START-PROMPTS.md) (Claude Code or Codex).
 2. Approve or adjust the proposed sessions and delegation matrix.
 3. Open one Claude Code session per letter in its worktree and give it its prompt from the tracker, or let the ORCH
    send it directly if the delegation allows it.

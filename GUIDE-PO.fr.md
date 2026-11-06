@@ -15,6 +15,10 @@ La méthode détaillée, pour Claude, est dans `skills/orchestration-multi-sessi
 
 ## 2. Mise en route (30 minutes)
 
+Les prompts exacts à coller (ORCH et sessions, sur Claude Code ou Codex) sont dans
+[START-PROMPTS.fr.md](START-PROMPTS.fr.md). Sur Codex, `/orch-init` n'existe pas : collez le prompt « ORCH sur
+Codex » à la place.
+
 1. Installez le kit (voir `README.md`), puis ouvrez Claude Code à la racine du projet.
 2. Tapez `/orch-init <Nom du projet>`. L'ORCH lit le projet et vous propose :
    - les sessions (par exemple A fondations, B backend, D design, E intégration, H déploiement) ;

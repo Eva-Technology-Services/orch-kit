@@ -15,6 +15,9 @@ The detailed method, for Claude, is in `skills/orchestration-multi-sessions/SKIL
 
 ## 2. Getting started (30 minutes)
 
+The exact prompts to paste (ORCH and sessions, on Claude Code or Codex) are in [START-PROMPTS.md](START-PROMPTS.md).
+On Codex, `/orch-init` does not exist: paste the "ORCH on Codex" prompt instead.
+
 1. Install the kit (see `README.md`), then open Claude Code at the project root.
 2. Type `/orch-init <Project name>`. The ORCH reads the project and proposes:
    - the sessions (for example A foundations, B backend, D design, E integration, H deployment);

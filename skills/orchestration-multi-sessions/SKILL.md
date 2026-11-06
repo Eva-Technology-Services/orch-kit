@@ -3,7 +3,7 @@ name: "orchestration-multi-sessions"
 description: "Run a project with an ORCH session (coordination), a human PO and several specialized Claude sessions, with a shared tracker. Use it when the project's CLAUDE.md has an \"Orchestration\" section, when the PO says \"you are the ORCH\" (or \"tu es l'ORCH\"), when a prompt starts with [ORCH P-xxx → X], or to set up this method on a project (/orch-init command)."
 ---
 
-# Multi-session orchestration (v2.3)
+# Multi-session orchestration (v2.4)
 
 An **ORCH** session coordinates. **Specialized** sessions do the work, each in its own domain (backend, screens, design, deployment, SEO…). The **PO** (the human) makes the decisions and keeps what the delegation does not give to the ORCH. A **tracker** (claude.ai artifact) keeps a record of every prompt and every PO action.
 
@@ -15,6 +15,8 @@ Who does what:
 The skill sets the frame. The project adds its specifics in its CLAUDE.md (sessions, environments, branches, conventions). The skill does not invent sessions, environments or branches.
 
 Claude answers the PO in the PO's language.
+
+Runtimes: the method works with **Claude Code** and with **Codex**, and with a mix of both (section 1.1). Start prompts for the ORCH and the sessions, on either tool: `START-PROMPTS.md` at the root of the kit.
 
 Templates shipped with this skill (`templates/` folder): CLAUDE.md section, prompt structure, return format, ORCH memory, backlog without an artifact. Ready-to-publish tracker: `tracker/index.en.html` (English) or `tracker/index.html` (French).
 
@@ -34,6 +36,19 @@ If information is missing: ask the PO once, then propose the block to add (`temp
 Role:
 - the CLAUDE.md or the PO says "you are the ORCH" ("tu es l'ORCH") → section 3;
 - the message starts with `[ORCH P-xxx → <session>]` → section 4, acting as that session.
+
+### 1.1 Claude Code and Codex
+Read "CLAUDE.md" below as "the project instructions": `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex. In a mixed team, keep one source: the full section in one file, and the other file pointing to it.
+
+| Feature | Claude Code | Codex |
+|---|---|---|
+| This skill | plugin, or `~/.claude/skills/` | `.agents/skills/` (repository) or `~/.agents/skills/` (user) |
+| Tracker | claude.ai artifact (section 5) | `docs/pilotage/BACKLOG.md` (`templates/BACKLOG.md`): no artifact |
+| Prompts and returns | direct messages (section 6) or carried by the PO | carried by the PO |
+| Risk-zone hook | `.claude/settings.json`; outside the zones: **ask** | `.codex/hooks.json` (`templates/hooks/codex-hooks.json`), trusted by the PO with `/hooks`; outside the zones: **deny** (Codex does not support "ask" yet, it would let the edit through) |
+| Status check | `/orch-status` | the status prompt of `START-PROMPTS.md` |
+
+An ORCH on Codex works the same way, except that the PO carries every prompt and return, and the tracker is the backlog file. An ORCH on Claude Code with sessions on Codex sends the Claude Code sessions their prompts directly, and asks the PO to carry the Codex ones.
 
 ## 2. Rules common to all sessions
 
@@ -100,7 +115,7 @@ Several sessions on the same machine use up its memory. Before a heavy run (full
 A task can change risk in the middle: a session starts on a plain endpoint and drifts toward authentication or the database. Checking the diff at delivery is too late for that. Three layers:
 1. **Declared zones.** `.claude/risk-zones.json` (template `templates/hooks/risk-zones.json`, committed) lists the risky areas by path: migrations, auth, security headers, payments, deployment, environment files. Each prompt says which zones the session may touch (`Risk zones: migrations` or `Risk zones: none`).
 2. **Immediate alert.** A session that needs a zone its prompt did not grant stops and sends the ORCH a short message (file, zone, why) before editing it. The ORCH answers: grant it (and record it in the card), refuse, or escalate to the PO under 3.5. It does not wait for the return.
-3. **Hard stop.** The PreToolUse hook `templates/hooks/guard-risk-zones.mjs` (registered by `templates/hooks/settings.json` in the project's `.claude/settings.json`) answers "ask" on any edit inside a zone the worktree is not cleared for, with the instruction to alert the ORCH. The clearance of a worktree is `.claude/risk-allow.local.json` (`{"session":"B","allow":["migrations"]}`, not committed), written by the ORCH when it opens the worktree for a prompt that grants the zone. Editing either config file is always guarded.
+3. **Hard stop.** The PreToolUse hook `templates/hooks/guard-risk-zones.mjs` (registered by `templates/hooks/settings.json` in the project's `.claude/settings.json` for Claude Code, and by `templates/hooks/codex-hooks.json` in `.codex/hooks.json` for Codex) stops any edit inside a zone the worktree is not cleared for, with the instruction to alert the ORCH: Claude Code asks the human, Codex refuses the edit. The clearance of a worktree is `.claude/risk-allow.local.json` (`{"session":"B","allow":["migrations"]}`, not committed), written by the ORCH when it opens the worktree for a prompt that grants the zone. Editing either config file is always guarded.
 At delivery, the ORCH still checks the diff against the granted zones. The hook is code that runs on the user's machine: `/orch-init` installs it only after the PO approves.
 
 ## 4. Specialized session role

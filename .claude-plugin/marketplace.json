@@ -7,7 +7,7 @@
     {
       "name": "orch-kit",
       "description": "Skill d'orchestration multi-sessions, modèles, tableau de suivi, /orch-init et /orch-status.",
-      "version": "2.3.0",
+      "version": "2.4.0",
       "source": "./",
       "category": "productivity",
       "tags": ["orchestration", "multi-session", "project-management", "tracker"]
