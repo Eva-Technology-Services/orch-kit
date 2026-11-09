@@ -249,7 +249,7 @@ function counts(){
 }
 
 /* ───── En cours ───── */
-const EVENTS = {lance:"Prompt envoyé", retour:"Retour", fusion:"Fusionné", deploiement:"Déployé", decision:"Décision", po:"PO", blocage:"Bloqué"};
+const EVENTS = {lance:"Prompt envoyé", retour:"Retour", fusion:"Fusionné", deploiement:"Déployé", decision:"Décision", po:"PO", blocage:"Bloqué", liaison:"Autre projet"};
 function since(iso){
   const d=new Date(iso);if(!iso||isNaN(d))return"";
   const m=Math.max(0,Math.round((Date.now()-d)/60000));

@@ -40,3 +40,12 @@ This project uses the `orchestration-multi-sessions` skill.
   - the ORCH asks first: production, spending, new public text, irreversible deletion, exception to a rule;
   - the PO only: opening and closing the sessions, entering or creating secrets, creating accounts, consoles the
     ORCH cannot reach, physical actions. Secrets stay in the user's environment variables and are never displayed.
+
+### Liaisons between projects
+
+Only the ORCH talks to another project, only to that project's ORCH, only on the common scope below, and only
+while the consent is valid (skill, section 6.1). No line: no liaison. The sessions never talk to another project.
+
+| Other project | ORCH here / there | Common scope | Consent (one-off, until <date>, permanent) | Given by (PO here, PO there), date |
+| ------------- | ----------------- | ------------ | ------------------------------------------ | ---------------------------------- |
+| <none>        |                   |              |                                            |                                    |

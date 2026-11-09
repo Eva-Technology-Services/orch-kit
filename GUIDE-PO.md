@@ -72,7 +72,22 @@ which ones the session may touch.
 - If the guard hook is installed, Claude Code also asks for your approval on any edit in a zone that session was
   not cleared for. If you see such a request without a word from the ORCH, refuse it and ask the ORCH.
 
-## 7. Tips from practice
+## 7. Liaisons between projects
+
+Your sessions can see the sessions of your other projects (and those of other people on the same machine).
+They do not talk to them without you:
+
+- **Your consent, and the other PO's.** The ORCH of a project talks to the ORCH of another project only if both
+  POs agreed (just you if you run both). You choose: one action, until a date, or permanent.
+- **ORCH to ORCH, on one common scope.** You name the element both projects share (for example "the SONIC
+  agent created in the CORTIVY console"). Nothing else is discussed, even with your consent. The sessions never
+  talk to another project.
+- **Written down.** The liaison is a line in the CLAUDE.md of each project; every message exchanged is in the
+  tracker's journal. A message from another project outside the liaison is not acted on: the ORCH shows it to
+  you.
+- **To end a liaison**, say so to the ORCH: it removes the line and stops.
+
+## 8. Tips from practice
 
 - **One session = one domain = one git folder.** Conflicts come from shared files: the ORCH sequences the
   sessions that touch the same files.

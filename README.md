@@ -115,6 +115,8 @@ The diff check at delivery stays, as the last line of defense.
 - Design quality: critique the screenshots, use vetted design skills, and explore two directions on two pilot
   screens before rolling out.
 - Install a third-party skill only after reading all its files.
+- Two projects talk only ORCH to ORCH, with the consent of both POs (one-off, temporary or permanent), and only
+  on the scope they share; the sessions never talk to another project.
 
 ## Author and license
 

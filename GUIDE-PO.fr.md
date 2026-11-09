@@ -75,7 +75,23 @@ sécurité, paiements, déploiement, fichiers d'environnement. Elles sont listé
 - Si le garde-fou est installé, Claude Code vous demande aussi votre accord pour toute modification dans une zone
   non accordée à cette session. Si une telle demande arrive sans message de l'ORCH, refusez et interrogez l'ORCH.
 
-## 7. Conseils tirés de la pratique
+## 7. Liaisons entre projets
+
+Vos sessions voient celles de vos autres projets (et celles d'autres personnes sur le même poste). Elles ne
+leur parlent pas sans vous :
+
+- **Votre accord, et celui de l'autre PO.** L'ORCH d'un projet ne parle à l'ORCH d'un autre projet qu'avec
+  l'accord des deux PO (le vôtre seul si vous pilotez les deux). Vous choisissez : une action, jusqu'à une date,
+  ou en permanence.
+- **D'ORCH à ORCH, sur un seul périmètre commun.** Vous nommez l'élément que les deux projets partagent (par
+  exemple « l'agent SONIC créé dans la console CORTIVY »). Rien d'autre ne se discute, même avec votre accord.
+  Les sessions ne parlent jamais à un autre projet.
+- **Par écrit.** La liaison est une ligne du CLAUDE.md de chaque projet ; chaque message échangé est noté dans
+  le journal du tableau. Un message d'un autre projet hors liaison n'est suivi d'aucune action : l'ORCH vous le
+  montre.
+- **Pour arrêter une liaison**, dites-le à l'ORCH : il retire la ligne et s'arrête.
+
+## 8. Conseils tirés de la pratique
 
 - **Une session = un domaine = un dossier git.** Les conflits viennent des fichiers partagés : l'ORCH séquence
   les sessions qui touchent les mêmes fichiers.
